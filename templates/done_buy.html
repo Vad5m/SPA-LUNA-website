@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Картинка</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&amp;family=Manrope:wght@200;300;400;500;600;700;800"
+            type="text/css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Comfortaa", Arial, sans-serif;
+            }
+
+            body {
+                min-height: 100vh;
+                background:
+                    linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.7)),
+                    #000000;
+                background-size: cover;
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+                position: relative;
+            }
+
+            .stars {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 1;
+            }
+
+            .star {
+                position: absolute;
+                background-color: #ffffff;
+                border-radius: 50%;
+                animation: twinkle 3s infinite;
+                box-shadow:
+                    0 0 8px rgba(255, 255, 255, 1),
+                    0 0 12px rgba(255, 255, 255, 0.6);
+                will-change: opacity, transform;
+            }
+
+            @keyframes twinkle {
+                0%,
+                100% {
+                    opacity: 0.3;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scale(1.2);
+                }
+            }
+
+            .floating-elements {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 2;
+                overflow: hidden;
+            }
+
+            .floating-element {
+                position: absolute;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+                animation: floatElement 15s infinite linear;
+                will-change: transform, opacity;
+            }
+
+            @keyframes floatElement {
+                0% {
+                    transform: translate3d(0, 0, 0) rotate(0deg);
+                }
+                100% {
+                    transform: translate3d(0, -1000px, 0) rotate(720deg);
+                }
+            }
+
+            .container {
+                position: relative;
+                z-index: 10;
+                text-align: center;
+                animation: slideUp 0.8s ease-out;
+            }
+
+            @keyframes slideUp {
+                0% {
+                    transform: translateY(50px);
+                    opacity: 0;
+                }
+                100% {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            .image {
+                width: 600px;
+                height: 400px;
+                border-radius: 20px;
+                box-shadow:
+                    0 10px 30px rgba(0, 0, 0, 0.5),
+                    0 0 0 1px rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                object-fit: cover;
+            }
+
+            .caption {
+                margin-top: 20px;
+                font-size: 24px;
+                color: rgba(255, 255, 255, 0.9);
+                padding: 15px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 15px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .loading {
+                font-size: 20px;
+                color: rgba(255, 255, 255, 0.7);
+                margin-bottom: 20px;
+            }
+
+            @media (max-width: 768px) {
+                .image {
+                    width: 90vw;
+                    height: 60vw;
+                }
+
+                .caption {
+                    font-size: 18px;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="stars" id="stars"></div>
+        <div class="floating-elements" id="floatingElements"></div>
+
+        <div class="container">
+            <div class="loading" id="loading">Загрузка...</div>
+            <img id="mainImage" class="image" style="display: none" />
+            <div class="caption" id="captionText"></div>
+        </div>
+
+        <script>
+            // Создание звездного фона
+            function createStars() {
+                const starsContainer = document.getElementById("stars");
+                const fragment = document.createDocumentFragment();
+                const numberOfStars = 150;
+
+                for (let i = 0; i < numberOfStars; i++) {
+                    const star = document.createElement("div");
+                    star.className = "star";
+                    const size = Math.random() * 3 + 1;
+                    const left = Math.random() * 100;
+                    const top = Math.random() * 100;
+                    const delay = Math.random() * 3;
+                    const duration = Math.random() * 3 + 2;
+
+                    star.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${left}%;
+                    top: ${top}%;
+                    animation-delay: ${delay}s;
+                    animation-duration: ${duration}s;
+                `;
+
+                    fragment.appendChild(star);
+                }
+                starsContainer.appendChild(fragment);
+            }
+
+            // Создание плавающих элементов
+            function createFloatingElements() {
+                const container = document.getElementById("floatingElements");
+                const fragment = document.createDocumentFragment();
+                const elements = ["●", "◆", "▲", "✦", "■", "♦"];
+                const numberOfElements = 15;
+
+                for (let i = 0; i < numberOfElements; i++) {
+                    const element = document.createElement("div");
+                    element.className = "floating-element";
+                    element.textContent =
+                        elements[Math.floor(Math.random() * elements.length)];
+                    const size = Math.random() * 15 + 8;
+                    const left = Math.random() * 100;
+                    const delay = Math.random() * 15;
+                    const duration = Math.random() * 20 + 10;
+                    const opacity = Math.random() * 0.2 + 0.05;
+
+                    element.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${left}%;
+                    top: ${100 + Math.random() * 20}%;
+                    animation-delay: ${delay}s;
+                    animation-duration: ${duration}s;
+                    opacity: ${opacity};
+                    font-size: ${size}px;
+                    color: rgba(255, 255, 255, ${opacity});
+                `;
+
+                    fragment.appendChild(element);
+                }
+                container.appendChild(fragment);
+            }
+
+            // Получение ID из URL
+            function getIdFromUrl() {
+                const path = window.location.pathname;
+                const parts = path.split("/");
+                // Ищем числовую часть в URL
+                for (let part of parts) {
+                    if (/^\d+$/.test(part)) {
+                        return part;
+                    }
+                }
+                return "123"; // значение по умолчанию
+            }
+
+            // Загрузка данных с сервера
+            async function loadData() {
+                const id = getIdFromUrl();
+                const apiUrl = `http://127.0.0.1:50001/done_buy/${id}`;
+
+                try {
+                    const response = await fetch(apiUrl);
+
+                    if (!response.ok) {
+                        throw new Error(`Ошибка HTTP: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    // Обновляем картинку и подпись
+                    if (data.image) {
+                        document.getElementById("mainImage").src = data.image;
+                        document.getElementById("mainImage").style.display =
+                            "block";
+                        document.getElementById("mainImage").alt =
+                            data.caption || "Картинка";
+                    }
+
+                    if (data.caption) {
+                        document.getElementById("captionText").textContent =
+                            data.caption;
+                    }
+
+                    // Скрываем загрузку
+                    document.getElementById("loading").style.display = "none";
+                } catch (error) {
+                    console.error("Ошибка загрузки:", error);
+                    document.getElementById("loading").textContent =
+                        "Ошибка загрузки данных";
+
+                    // Если API недоступен, используем заглушки
+                    document.getElementById("mainImage").src =
+                        `https://via.placeholder.com/600x400/333/fff?text=${id}`;
+                    document.getElementById("mainImage").style.display =
+                        "block";
+                    document.getElementById("captionText").textContent =
+                        `${id}`;
+                    document.getElementById("loading").style.display = "none";
+                }
+            }
+
+            // Инициализация при загрузке
+            document.addEventListener("DOMContentLoaded", function () {
+                createStars();
+                createFloatingElements();
+                loadData();
+            });
+        </script>
+    </body>
+</html>

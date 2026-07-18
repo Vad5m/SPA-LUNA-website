@@ -1,0 +1,1162 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=yes"
+        />
+        <title>Абонементы | Салон красоты</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Comfortaa", Arial, sans-serif;
+            }
+
+            body {
+                min-height: 100vh;
+                background:
+                    linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.7)),
+                    #000000;
+                background-size: cover;
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow-x: hidden;
+                position: relative;
+            }
+
+            .stars {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 1;
+            }
+
+            .star {
+                position: absolute;
+                background-color: #ffffff;
+                border-radius: 50%;
+                animation: twinkle 3s infinite;
+                box-shadow:
+                    0 0 8px rgba(255, 255, 255, 1),
+                    0 0 12px rgba(255, 255, 255, 0.6);
+                will-change: opacity, transform;
+            }
+
+            @keyframes twinkle {
+                0%,
+                100% {
+                    opacity: 0.3;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scale(1.2);
+                }
+            }
+
+            .floating-elements {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 2;
+                overflow: hidden;
+            }
+
+            .floating-element {
+                position: absolute;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+                animation: floatElement 15s infinite linear;
+                will-change: transform, opacity;
+            }
+
+            @keyframes floatElement {
+                0% {
+                    transform: translate3d(0, 0, 0) rotate(0deg);
+                }
+                100% {
+                    transform: translate3d(0, -1000px, 0) rotate(720deg);
+                }
+            }
+
+            .container {
+                position: relative;
+                z-index: 10;
+                width: 100%;
+                max-width: 1200px;
+                padding: 40px 20px;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 60px;
+                align-items: start;
+                animation: slideUp 0.8s ease-out;
+            }
+
+            @keyframes slideUp {
+                0% {
+                    transform: translateY(50px);
+                    opacity: 0;
+                }
+                100% {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            .left-column {
+                display: flex;
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .buttons-container {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                width: 100%;
+            }
+
+            .btn {
+                padding: 20px 30px;
+                font-size: 18px;
+                font-weight: 600;
+                color: white;
+                text-decoration: none;
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.15) 0%,
+                    rgba(255, 255, 255, 0.08) 100%
+                );
+                border-radius: 25px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.4),
+                    0 0 0 1px rgba(255, 255, 255, 0.1);
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+                position: relative;
+                overflow: hidden;
+                cursor: pointer;
+                text-align: center;
+                width: 100%;
+                min-height: 70px;
+            }
+
+            .btn::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.15),
+                    transparent
+                );
+                transition: left 0.5s ease;
+            }
+
+            .btn:hover::before {
+                left: 100%;
+            }
+            .btn:hover {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.22) 0%,
+                    rgba(255, 255, 255, 0.12) 100%
+                );
+                transform: translateY(-3px);
+                box-shadow:
+                    0 12px 40px rgba(0, 0, 0, 0.5),
+                    0 0 0 1px rgba(255, 255, 255, 0.15);
+                border: 1px solid rgba(255, 255, 255, 0.25);
+            }
+            .btn:active {
+                transform: translateY(-1px);
+            }
+            .btn i {
+                font-size: 22px;
+                transition: transform 0.3s ease;
+                opacity: 0.9;
+            }
+            .btn:hover i {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            .certificate-panel {
+                display: none;
+                width: 100%;
+                animation: fadeIn 0.5s ease-out;
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.1) 0%,
+                    rgba(255, 255, 255, 0.05) 100%
+                );
+                border-radius: 25px;
+                padding: 30px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.4),
+                    0 0 0 1px rgba(255, 255, 255, 0.1);
+                text-align: center;
+            }
+            .certificate-panel h2 {
+                font-size: 28px;
+                margin-bottom: 20px;
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+                position: relative;
+                padding-bottom: 15px;
+                display: inline-block;
+            }
+            .certificate-panel h2::after {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 3px;
+                background: linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0.8),
+                    transparent
+                );
+            }
+            .qr-image-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 20px 0;
+            }
+            .qr-image-container img {
+                max-width: 280px;
+                width: 100%;
+                border-radius: 20px;
+                background: white;
+                padding: 10px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            }
+            .mobile-link-btn {
+                display: none;
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 215, 0, 0.3) 0%,
+                    rgba(255, 165, 0, 0.2) 100%
+                );
+                border: 1px solid rgba(255, 215, 0, 0.4);
+                margin-top: 20px;
+            }
+            .subscriptions-panel {
+                display: none;
+                width: 100%;
+                animation: fadeIn 0.5s ease-out;
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.1) 0%,
+                    rgba(255, 255, 255, 0.05) 100%
+                );
+                border-radius: 25px;
+                padding: 30px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            }
+            .subscriptions-panel h2 {
+                font-size: 28px;
+                margin-bottom: 25px;
+                text-align: center;
+                position: relative;
+                padding-bottom: 15px;
+            }
+            .subscriptions-panel h2::after {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 3px;
+                background: linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0.8),
+                    transparent
+                );
+            }
+            .subscriptions-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                width: 100%;
+            }
+            .sub-btn {
+                border-radius: 30px;
+                padding: 28px 24px;
+                font-size: 18px;
+                font-weight: 600;
+                color: white;
+                text-align: left;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 15px;
+                width: 100%;
+                line-height: 1.4;
+                position: relative;
+                overflow: hidden;
+            }
+            .sub-btn.gold {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 215, 0, 0.25) 0%,
+                    rgba(255, 200, 0, 0.15) 100%
+                );
+                border: 2px solid #ffd700;
+                box-shadow:
+                    0 0 12px rgba(255, 215, 0, 0.4),
+                    0 5px 15px rgba(0, 0, 0, 0.3);
+                position: relative;
+                z-index: 1;
+            }
+            .sub-btn.gold::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: url("/static/pixverse_mp4_media_web_ori_d0a06b7e-5bb8-4a03-8cde-3dbcf4e745f4_seed112063817-Picsart-BackgroundRemover.webm")
+                    center/cover no-repeat;
+                opacity: 0.4;
+                pointer-events: none;
+                z-index: 0;
+                border-radius: 30px;
+            }
+            .sub-btn.gold .gold-gif-bg {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 30px;
+                opacity: 0.4;
+                pointer-events: none;
+                z-index: 0;
+            }
+            .sub-btn.gold:hover::before,
+            .sub-btn.gold:hover .gold-gif-bg {
+                opacity: 0.6;
+            }
+            .sub-btn.gold:hover {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 215, 0, 0.35) 0%,
+                    rgba(255, 200, 0, 0.25) 100%
+                );
+                border-color: #ffea80;
+                transform: translateY(-3px);
+            }
+            .sub-btn.silver {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.15) 0%,
+                    rgba(255, 255, 255, 0.08) 100%
+                );
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            }
+            .sub-btn.silver:hover {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.22) 0%,
+                    rgba(255, 255, 255, 0.12) 100%
+                );
+                border-color: rgba(255, 255, 255, 0.5);
+                transform: translateY(-3px);
+            }
+            .sub-btn-content {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                flex: 1;
+                position: relative;
+                z-index: 3;
+            }
+            .sub-btn-title {
+                font-size: 20px;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+            }
+            .sub-btn-details {
+                font-size: 14px;
+                opacity: 0.9;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                align-items: baseline;
+            }
+            .sub-btn-price {
+                font-weight: 700;
+                color: #ffd966;
+                font-size: 18px;
+            }
+            .sub-btn-oldprice {
+                text-decoration: line-through;
+                font-size: 13px;
+                opacity: 0.7;
+            }
+            .sub-btn-visits {
+                background: rgba(255, 255, 255, 0.2);
+                padding: 4px 12px;
+                border-radius: 30px;
+                font-size: 13px;
+            }
+            .right-column {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .moon-container {
+                position: relative;
+                animation: float 6s ease-in-out infinite;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0px);
+                }
+                50% {
+                    transform: translateY(-20px);
+                }
+            }
+            .moon {
+                width: 300px;
+                height: 300px;
+                background: radial-gradient(
+                    circle at 30% 30%,
+                    #ffed4e,
+                    #ffd700
+                );
+                border-radius: 50%;
+                box-shadow:
+                    0 0 100px rgba(255, 215, 0, 0.8),
+                    inset -25px -25px 40px rgba(0, 0, 0, 0.4),
+                    inset 10px 10px 20px rgba(255, 255, 255, 0.6);
+                position: relative;
+                overflow: hidden;
+            }
+            .moon::before {
+                content: "";
+                position: absolute;
+                width: 50px;
+                height: 50px;
+                background: rgba(180, 160, 80, 0.7);
+                border-radius: 50%;
+                top: 60px;
+                left: 80px;
+                box-shadow:
+                    30px 40px 0 -10px rgba(160, 140, 60, 0.6),
+                    100px 80px 0 -5px rgba(170, 150, 70, 0.7),
+                    150px 40px 0 -8px rgba(190, 170, 90, 0.6),
+                    60px 150px 0 -12px rgba(200, 180, 100, 0.7),
+                    180px 160px 0 -7px rgba(160, 140, 60, 0.6);
+            }
+            @media (max-width: 1024px) {
+                .container {
+                    grid-template-columns: 1fr;
+                    gap: 40px;
+                }
+                .left-column {
+                    order: 2;
+                }
+                .right-column {
+                    order: 1;
+                }
+                .moon {
+                    width: 280px;
+                    height: 280px;
+                }
+            }
+            @media (max-width: 768px) {
+                .sub-btn {
+                    padding: 22px 20px;
+                    flex-wrap: wrap;
+                }
+                .moon {
+                    width: 250px;
+                    height: 250px;
+                }
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(15px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.9);
+                backdrop-filter: blur(8px);
+                z-index: 1000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                visibility: hidden;
+                opacity: 0;
+                transition:
+                    visibility 0.2s,
+                    opacity 0.2s ease;
+            }
+            .modal-overlay.active {
+                visibility: visible;
+                opacity: 1;
+            }
+            .modal-window {
+                border-radius: 40px;
+                max-width: 560px;
+                width: 90%;
+                padding: 0;
+                text-align: center;
+                overflow: hidden;
+                animation: modalPop 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+                transform: scale(0.95);
+                transition: all 0.2s;
+            }
+            .modal-overlay.active .modal-window {
+                transform: scale(1);
+            }
+            @keyframes modalPop {
+                0% {
+                    transform: scale(0.9);
+                    opacity: 0;
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+            .modal-window.gold-modal {
+                background: #0a0a0a;
+                border: 2px solid #ffd700;
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+            }
+            .modal-window.silver-modal {
+                background: #111116;
+                border: 2px solid #b0b0b0;
+                box-shadow: 0 0 25px rgba(192, 192, 192, 0.3);
+            }
+            .modal-video-container {
+                width: 100%;
+                background: #000;
+                position: relative;
+            }
+            .modal-video-container video {
+                width: 100%;
+                display: block;
+                object-fit: cover;
+                max-height: 300px;
+            }
+            .video-error-message {
+                padding: 60px 20px;
+                text-align: center;
+                color: #ff9999;
+                background: #1a1a1a;
+            }
+            .modal-info {
+                padding: 24px 28px 32px;
+            }
+            .modal-title {
+                font-size: 26px;
+                font-weight: 800;
+                margin-bottom: 12px;
+                letter-spacing: 1px;
+            }
+            .gold-modal .modal-title {
+                color: #ffd966;
+                text-shadow: 0 0 5px rgba(255, 220, 0, 0.5);
+            }
+            .silver-modal .modal-title {
+                color: #dddddd;
+                text-shadow: 0 0 4px rgba(192, 192, 192, 0.6);
+            }
+            .modal-desc {
+                font-size: 16px;
+                line-height: 1.5;
+                margin-bottom: 24px;
+                color: #e0e0e0;
+                font-weight: 400;
+            }
+            .modal-price-block {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                align-items: baseline;
+                margin-bottom: 28px;
+                flex-wrap: wrap;
+            }
+            .modal-price-current {
+                font-size: 28px;
+                font-weight: 800;
+                color: #ffd966;
+            }
+            .modal-price-old {
+                font-size: 18px;
+                text-decoration: line-through;
+                opacity: 0.6;
+                color: #ccc;
+            }
+            .modal-visits {
+                background: rgba(255, 255, 255, 0.12);
+                padding: 6px 14px;
+                border-radius: 60px;
+                font-size: 14px;
+                display: inline-block;
+                margin-bottom: 18px;
+            }
+            .buy-modal-btn {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 215, 0, 0.2),
+                    rgba(255, 200, 0, 0.1)
+                );
+                border: 1px solid #ffd966;
+                color: #ffd966;
+                padding: 12px 28px;
+                border-radius: 60px;
+                font-weight: bold;
+                font-size: 18px;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                margin-top: 8px;
+            }
+            .buy-modal-btn:hover {
+                background: rgba(255, 215, 0, 0.35);
+                color: white;
+                transform: scale(1.02);
+            }
+            .close-modal-icon {
+                position: absolute;
+                top: 14px;
+                right: 20px;
+                font-size: 28px;
+                cursor: pointer;
+                color: rgba(255, 255, 240, 0.7);
+                transition: 0.2s;
+                z-index: 12;
+            }
+            .close-modal-icon:hover {
+                color: #ffd966;
+                transform: scale(1.1);
+            }
+            .modal-window {
+                position: relative;
+            }
+            .payment-qr-container {
+                text-align: center;
+                padding: 10px 0 20px 0;
+            }
+            .payment-qr-container img {
+                background: white;
+                padding: 15px;
+                border-radius: 25px;
+                width: 220px;
+                height: auto;
+                margin: 10px auto;
+                display: block;
+            }
+            .payment-qr-hint {
+                font-size: 13px;
+                opacity: 0.7;
+                margin-top: 8px;
+            }
+            .modal-payment-link {
+                background: rgba(255, 215, 0, 0.2);
+                border: 1px solid #ffd966;
+                color: #ffd966;
+                padding: 12px 20px;
+                border-radius: 50px;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                text-decoration: none;
+                font-weight: bold;
+                transition: 0.2s;
+                margin: 15px auto 5px;
+                width: auto;
+            }
+            .modal-payment-link:hover {
+                background: rgba(255, 215, 0, 0.35);
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="stars" id="stars"></div>
+        <div class="floating-elements" id="floatingElements"></div>
+
+        <div class="container">
+            <div class="left-column">
+                <div class="buttons-container" id="mainButtons">
+                    <button class="btn" id="buyCertBtn">
+                        <i class="fas fa-shopping-cart"></i> Купить сертификат
+                    </button>
+                    <button class="btn" id="subscriptionsBtn">
+                        <i class="fas fa-ticket-alt"></i> Абонименты
+                    </button>
+                </div>
+                <div class="certificate-panel" id="certificatePanel">
+                    <h2><i class="fas fa-qrcode"></i> Сертификат</h2>
+                    <div class="qr-image-container">
+                        <img
+                            src="/static/serteficatQR.png"
+                            alt="QR-код"
+                            id="qrImg"
+                        />
+                    </div>
+                    <a
+                        href="https://payment.alfabank.ru/sc/BCcvnmaaZAyRCbdQ"
+                        class="btn mobile-link-btn"
+                        id="mobilePayLink"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        ><i class="fas fa-mobile-alt"></i> Перейти к оплате</a
+                    >
+                    <button
+                        class="btn back-from-certificate"
+                        id="backFromCertBtn"
+                    >
+                        <i class="fas fa-arrow-left"></i> Назад
+                    </button>
+                </div>
+                <div class="subscriptions-panel" id="subscriptionsPanel">
+                    <h2><i class="fas fa-calendar-alt"></i> Наши абонементы</h2>
+                    <div
+                        class="subscriptions-grid"
+                        id="subscriptionsGrid"
+                    ></div>
+                    <button
+                        class="btn back-from-subscriptions"
+                        id="backFromSubBtn"
+                        style="margin-top: 25px"
+                    >
+                        <i class="fas fa-arrow-left"></i> Назад
+                    </button>
+                </div>
+            </div>
+            <div class="right-column">
+                <div class="moon-container"><div class="moon"></div></div>
+            </div>
+        </div>
+
+        <div id="subscriptionModal" class="modal-overlay">
+            <div class="modal-window" id="modalWindow">
+                <span class="close-modal-icon" id="closeModalCross"
+                    ><i class="fas fa-times-circle"></i
+                ></span>
+                <div
+                    class="modal-video-container"
+                    id="modalVideoContainer"
+                ></div>
+                <div class="modal-info">
+                    <div class="modal-title" id="modalTitle">Абонемент</div>
+                    <div class="modal-visits" id="modalVisits">0 посещений</div>
+                    <div class="modal-desc" id="modalDesc">Описание услуги</div>
+                    <div class="modal-price-block">
+                        <span class="modal-price-current" id="modalPrice"
+                            >0 ₽</span
+                        >
+                        <span class="modal-price-old" id="modalOldPrice"
+                            >0 ₽</span
+                        >
+                    </div>
+                    <div id="paymentMethodContainer"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // === ОБНОВЛЕННЫЕ ДАННЫЕ: ДЛЯ СЕРЕБРЯНЫХ АБОНЕМЕНТОВ СКИДКА 15% (ЦЕНА = СТАРАЯ * 0.85) ===
+            const subscriptionsData = [
+                {
+                    baseName: "Магия тела",
+                    type: "gold",
+                    visits: 10,
+                    price: 30600,
+                    oldPrice: 36000,
+                    description:
+                        "Ручной массаж по маслу. Глубокое расслабление и восстановление тела. 10 сеансов полного релакса.",
+                    video: "/static/doc_2026-02-24_20-06-43.mp4",
+                    paymentUrl:
+                        "https://payment.alfabank.ru/sc/SbqzxvgzdgyRqLCt",
+                },
+                {
+                    baseName: "Магия тела",
+                    type: "silver",
+                    visits: 5,
+                    price: 15300,
+                    oldPrice: 18000,
+                    description:
+                        "Ручной массаж по маслу. 5 сеансов для поддержания тонуса и энергии. Скидка 15%!",
+                    video: "/static/doc_2026-02-24_20-06-43.mp4",
+                    paymentUrl:
+                        "https://payment.alfabank.ru/sc/pKheiQUWdgOajigN",
+                },
+                {
+                    baseName: "Сияние лица",
+                    type: "gold",
+                    visits: 10,
+                    price: 15300,
+                    oldPrice: 18000,
+                    description:
+                        "Ручной массаж лица. Омоложение, лифтинг, здоровое сияние. Комплекс из 10 процедур.",
+                    video: "/static/doc_2026-02-24_20-14-09.mp4",
+                    paymentUrl:
+                        "https://payment.alfabank.ru/sc/GPQTtndOelpxBIrd",
+                },
+                {
+                    baseName: "Сияние лица",
+                    type: "silver",
+                    visits: 5,
+                    price: 7650,
+                    oldPrice: 9000,
+                    description:
+                        "Ручной массаж лица. 5 процедур для свежести и тонуса кожи. Скидка 15%!",
+                    video: "/static/doc_2026-02-24_20-14-09.mp4",
+                    paymentUrl:
+                        "https://payment.alfabank.ru/sc/CmwiwORZfNPeCtal",
+                },
+                {
+                    baseName: "Техно-релакс",
+                    type: "gold",
+                    visits: 10,
+                    price: 14450,
+                    oldPrice: 17000,
+                    description:
+                        "Аппаратный массаж тела. Инновационные технологии для глубокой релаксации и восстановления.",
+                    video: "/static/doc_2026-02-24_20-56-37.mp4",
+                    paymentUrl:
+                        "https://payment.alfabank.ru/sc/VINPTYsxSqIVBZtg",
+                },
+                {
+                    baseName: "Техно-релакс",
+                    type: "silver",
+                    visits: 5,
+                    price: 7225,
+                    oldPrice: 8500,
+                    description:
+                        "Аппаратный массаж тела. 5 сеансов для восстановления энергии и тонуса. Скидка 15%!",
+                    video: "/static/doc_2026-02-24_20-56-37.mp4",
+                    paymentUrl:
+                        "https://payment.alfabank.ru/sc/geRIhPzgCjsagngD",
+                },
+                {
+                    baseName: "Идеальный контур",
+                    type: "gold",
+                    visits: 10,
+                    price: 8500,
+                    oldPrice: 10000,
+                    description:
+                        "Аппаратный массаж лица. Моделирование овала, коррекция контуров, лифтинг-эффект.",
+                    video: "/static/lv_0_20260402181105.mp4",
+                    paymentUrl:
+                        "https://payment.alfabank.ru/sc/ZhsIsbNEKzZnJlko",
+                },
+                {
+                    baseName: "Идеальный контур",
+                    type: "silver",
+                    visits: 5,
+                    price: 4250,
+                    oldPrice: 5000,
+                    description:
+                        "Аппаратный массаж лица. 5 процедур для четкого контура и сияния кожи. Скидка 15%!",
+                    video: "/static/lv_0_20260402181105.mp4",
+                    paymentUrl:
+                        "https://payment.alfabank.ru/sc/uOfjkPBlkDJDKxXO",
+                },
+            ];
+
+            const modalOverlay = document.getElementById("subscriptionModal");
+            const modalWindow = document.getElementById("modalWindow");
+            const modalVideoContainer = document.getElementById(
+                "modalVideoContainer",
+            );
+            const modalTitle = document.getElementById("modalTitle");
+            const modalVisitsSpan = document.getElementById("modalVisits");
+            const modalDesc = document.getElementById("modalDesc");
+            const modalPriceSpan = document.getElementById("modalPrice");
+            const modalOldPriceSpan = document.getElementById("modalOldPrice");
+            const paymentMethodContainer = document.getElementById(
+                "paymentMethodContainer",
+            );
+            const closeCross = document.getElementById("closeModalCross");
+
+            function closeModal() {
+                modalOverlay.classList.remove("active");
+                document.body.style.overflow = "";
+                const oldVideo = modalVideoContainer.querySelector("video");
+                if (oldVideo) {
+                    oldVideo.pause();
+                    oldVideo.src = "";
+                }
+                modalVideoContainer.innerHTML = "";
+                paymentMethodContainer.innerHTML = "";
+            }
+
+            function renderPaymentMethod(paymentUrl) {
+                const isMobile = window.innerWidth <= 768;
+                paymentMethodContainer.innerHTML = "";
+                if (isMobile) {
+                    const linkBtn = document.createElement("a");
+                    linkBtn.href = paymentUrl;
+                    linkBtn.target = "_blank";
+                    linkBtn.rel = "noopener noreferrer";
+                    linkBtn.className = "modal-payment-link";
+                    linkBtn.innerHTML =
+                        '<i class="fas fa-mobile-alt"></i> Перейти к оплате';
+                    paymentMethodContainer.appendChild(linkBtn);
+                } else {
+                    const qrBlock = document.createElement("div");
+                    qrBlock.className = "payment-qr-container";
+                    qrBlock.innerHTML = `<div id="dynamicQR"></div><div class="payment-qr-hint"><i class="fas fa-camera"></i> Наведите камеру телефона</div>`;
+                    paymentMethodContainer.appendChild(qrBlock);
+                    new QRCode(document.getElementById("dynamicQR"), {
+                        text: paymentUrl,
+                        width: 200,
+                        height: 200,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.M,
+                    });
+                }
+            }
+
+            function showModalForSubscription(sub) {
+                modalVideoContainer.innerHTML = "";
+                const videoElem = document.createElement("video");
+                videoElem.autoplay = true;
+                videoElem.loop = true;
+                videoElem.muted = true;
+                videoElem.playsInline = true;
+                videoElem.controls = false;
+                videoElem.style.width = "100%";
+                videoElem.style.display = "block";
+                const source = document.createElement("source");
+                source.src = sub.video;
+                source.type = "video/mp4";
+                videoElem.appendChild(source);
+                videoElem.onerror = function () {
+                    modalVideoContainer.innerHTML = `<div class="video-error-message"><i class="fas fa-exclamation-triangle" style="font-size: 40px; margin-bottom: 15px; display: block;"></i>Видео не загрузилось<br><small>${sub.video}</small></div>`;
+                };
+                modalVideoContainer.appendChild(videoElem);
+                const typeLabel =
+                    sub.type === "gold"
+                        ? "ЗОЛОТОЙ АБОНЕМЕНТ"
+                        : "СЕРЕБРЯНЫЙ АБОНЕМЕНТ";
+                modalTitle.innerText = `${typeLabel} · ${sub.baseName}`;
+                modalVisitsSpan.innerText = `${sub.visits} посещений`;
+                modalDesc.innerText = sub.description;
+                modalPriceSpan.innerText = `${sub.price.toLocaleString()} ₽`;
+                modalOldPriceSpan.innerText = `${sub.oldPrice.toLocaleString()} ₽`;
+                modalWindow.classList.remove("gold-modal", "silver-modal");
+                modalWindow.classList.add(
+                    sub.type === "gold" ? "gold-modal" : "silver-modal",
+                );
+                renderPaymentMethod(sub.paymentUrl);
+                modalOverlay.classList.add("active");
+                document.body.style.overflow = "hidden";
+            }
+
+            function generateSubscriptionButtons() {
+                const grid = document.getElementById("subscriptionsGrid");
+                grid.innerHTML = "";
+                subscriptionsData.forEach((sub) => {
+                    const btn = document.createElement("button");
+                    btn.className = `sub-btn ${sub.type}`;
+                    const typeLabel =
+                        sub.type === "gold" ? "ЗОЛОТОЙ" : "СЕРЕБРЯНЫЙ";
+                    let gifBgHtml = "";
+                    if (sub.type === "gold") {
+                        gifBgHtml = `<video class="gold-gif-bg" autoplay loop muted playsinline><source src="/static/pixverse_mp4_media_web_ori_d0a06b7e-5bb8-4a03-8cde-3dbcf4e745f4_seed112063817-Picsart-BackgroundRemover.webm" type="video/webm"></video>`;
+                    }
+                    btn.innerHTML =
+                        gifBgHtml +
+                        `<div class="sub-btn-content"><div class="sub-btn-title">${typeLabel} · ${sub.baseName}</div><div class="sub-btn-details"><span class="sub-btn-visits"><i class="far fa-calendar-check"></i> ${sub.visits} посещений</span><span class="sub-btn-price">${sub.price.toLocaleString()} ₽</span><span class="sub-btn-oldprice">${sub.oldPrice.toLocaleString()} ₽</span></div><div style="font-size:12px; opacity:0.8; margin-top:5px;">${sub.description.substring(0, 60)}${sub.description.length > 60 ? "..." : ""}</div></div>`;
+                    btn.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        showModalForSubscription(sub);
+                    });
+                    grid.appendChild(btn);
+                    if (sub.type === "gold") {
+                        const videoElem = btn.querySelector(".gold-gif-bg");
+                        if (videoElem)
+                            videoElem
+                                .play()
+                                .catch((e) =>
+                                    console.log("video play error:", e),
+                                );
+                    }
+                });
+            }
+
+            // Управление панелями
+            const mainButtonsDiv = document.getElementById("mainButtons");
+            const certPanel = document.getElementById("certificatePanel");
+            const subsPanel = document.getElementById("subscriptionsPanel");
+            const buyCertBtn = document.getElementById("buyCertBtn");
+            const subscriptionsBtn =
+                document.getElementById("subscriptionsBtn");
+            const backFromCertBtn = document.getElementById("backFromCertBtn");
+            const backFromSubBtn = document.getElementById("backFromSubBtn");
+
+            function showMainButtons() {
+                mainButtonsDiv.style.display = "flex";
+                certPanel.style.display = "none";
+                subsPanel.style.display = "none";
+            }
+            function showCertificatePanel() {
+                mainButtonsDiv.style.display = "none";
+                certPanel.style.display = "block";
+                subsPanel.style.display = "none";
+                const qrContainer = document.querySelector(
+                    "#certificatePanel .qr-image-container",
+                );
+                const mobileLink = document.getElementById("mobilePayLink");
+                if (window.innerWidth <= 768) {
+                    if (qrContainer) qrContainer.style.display = "none";
+                    if (mobileLink) mobileLink.style.display = "flex";
+                } else {
+                    if (qrContainer) qrContainer.style.display = "flex";
+                    if (mobileLink) mobileLink.style.display = "none";
+                }
+            }
+            function showSubscriptionsPanel() {
+                mainButtonsDiv.style.display = "none";
+                certPanel.style.display = "none";
+                subsPanel.style.display = "block";
+            }
+            function handleResizeForCert() {
+                if (certPanel.style.display === "block") {
+                    const qrContainer = document.querySelector(
+                        "#certificatePanel .qr-image-container",
+                    );
+                    const mobileLink = document.getElementById("mobilePayLink");
+                    if (window.innerWidth <= 768) {
+                        if (qrContainer) qrContainer.style.display = "none";
+                        if (mobileLink) mobileLink.style.display = "flex";
+                    } else {
+                        if (qrContainer) qrContainer.style.display = "flex";
+                        if (mobileLink) mobileLink.style.display = "none";
+                    }
+                }
+            }
+            function bindModalEvents() {
+                closeCross.addEventListener("click", closeModal);
+                modalOverlay.addEventListener("click", (e) => {
+                    if (e.target === modalOverlay) closeModal();
+                });
+                document.addEventListener("keydown", (e) => {
+                    if (
+                        e.key === "Escape" &&
+                        modalOverlay.classList.contains("active")
+                    )
+                        closeModal();
+                });
+                window.addEventListener("resize", () => {
+                    if (modalOverlay.classList.contains("active")) {
+                        const modalTitleText = modalTitle.innerText;
+                        const foundSub = subscriptionsData.find(
+                            (s) =>
+                                `${s.type === "gold" ? "ЗОЛОТОЙ АБОНЕМЕНТ" : "СЕРЕБРЯНЫЙ АБОНЕМЕНТ"} · ${s.baseName}` ===
+                                modalTitleText,
+                        );
+                        if (foundSub) renderPaymentMethod(foundSub.paymentUrl);
+                    }
+                    handleResizeForCert();
+                });
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                createStars();
+                createFloatingElements();
+                generateSubscriptionButtons();
+                bindModalEvents();
+                buyCertBtn.addEventListener("click", showCertificatePanel);
+                subscriptionsBtn.addEventListener(
+                    "click",
+                    showSubscriptionsPanel,
+                );
+                backFromCertBtn.addEventListener("click", showMainButtons);
+                backFromSubBtn.addEventListener("click", showMainButtons);
+                showMainButtons();
+            });
+
+            function createStars() {
+                const starsContainer = document.getElementById("stars");
+                const fragment = document.createDocumentFragment();
+                for (let i = 0; i < 150; i++) {
+                    const star = document.createElement("div");
+                    star.className = "star";
+                    const size = Math.random() * 3 + 1;
+                    star.style.cssText = `width: ${size}px; height: ${size}px; left: ${Math.random() * 100}%; top: ${Math.random() * 100}%; animation-delay: ${Math.random() * 3}s; animation-duration: ${Math.random() * 3 + 2}s;`;
+                    fragment.appendChild(star);
+                }
+                starsContainer.appendChild(fragment);
+            }
+
+            function createFloatingElements() {
+                const container = document.getElementById("floatingElements");
+                const fragment = document.createDocumentFragment();
+                const chars = ["●", "◆", "▲", "✦", "■", "♦"];
+                for (let i = 0; i < 15; i++) {
+                    const el = document.createElement("div");
+                    el.className = "floating-element";
+                    el.textContent =
+                        chars[Math.floor(Math.random() * chars.length)];
+                    const size = Math.random() * 15 + 8;
+                    el.style.cssText = `width: ${size}px; height: ${size}px; left: ${Math.random() * 100}%; top: ${100 + Math.random() * 20}%; animation-delay: ${Math.random() * 15}s; animation-duration: ${Math.random() * 20 + 10}s; opacity: ${Math.random() * 0.2 + 0.05}; font-size: ${size}px;`;
+                    fragment.appendChild(el);
+                }
+                container.appendChild(fragment);
+            }
+        </script>
+    </body>
+</html>

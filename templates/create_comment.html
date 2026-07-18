@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Регистрация через Telegram</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+
+            .container {
+                background: white;
+                border-radius: 20px;
+                padding: 40px;
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                max-width: 400px;
+                width: 100%;
+            }
+
+            .logo {
+                width: 80px;
+                height: 80px;
+                background: #0088cc;
+                border-radius: 50%;
+                margin: 0 auto 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 32px;
+            }
+
+            h1 {
+                color: #333;
+                margin-bottom: 10px;
+                font-size: 28px;
+            }
+
+            .subtitle {
+                color: #666;
+                margin-bottom: 30px;
+                font-size: 16px;
+                line-height: 1.5;
+            }
+
+            .telegram-btn {
+                background: #0088cc;
+                color: white;
+                border: none;
+                padding: 15px 30px;
+                border-radius: 50px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .telegram-btn:hover {
+                background: #0077b3;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 136, 204, 0.3);
+            }
+
+            .telegram-btn:active {
+                transform: translateY(0);
+            }
+
+            .benefits {
+                text-align: left;
+                margin-top: 30px;
+                padding: 20px;
+                background: #f8f9fa;
+                border-radius: 10px;
+            }
+
+            .benefits h3 {
+                color: #333;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+
+            .benefits ul {
+                list-style: none;
+            }
+
+            .benefits li {
+                padding: 8px 0;
+                color: #555;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .benefits li:before {
+                content: "✓";
+                color: #28a745;
+                font-weight: bold;
+            }
+
+            .loading {
+                display: none;
+                margin-top: 20px;
+                color: #666;
+            }
+
+            .error {
+                color: #dc3545;
+                margin-top: 15px;
+                padding: 10px;
+                background: #f8d7da;
+                border-radius: 5px;
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="logo">
+                <svg
+                    width="40"
+                    height="40"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                >
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.78 5.42-.9 6.8-.06.67-.36.89-.89.56-2.45-1.83-3.57-2.98-5.78-4.78-.51-.36-.87-.54-.84-1.04.03-.41.5-.59.88-.42 1.83 1.17 3.89 2.22 5.45 3.22.5.31.85.15.97-.42.23-1.17.78-4.11.9-5.33.06-.51.33-.74.75-.56.23.09 1.47.94 2.29 1.73.33.31.56.61.64.91.06.3.01.75-.33.75z"
+                    />
+                </svg>
+            </div>
+
+            <h1>Присоединяйтесь</h1>
+            <p class="subtitle">
+                Зарегистрируйтесь через Telegram одним кликом
+            </p>
+
+            <div id="telegram-login-container"></div>
+            <button class="telegram-btn" onclick="initTelegramAuth()">
+                <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                >
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.78 5.42-.9 6.8-.06.67-.36.89-.89.56-2.45-1.83-3.57-2.98-5.78-4.78-.51-.36-.87-.54-.84-1.04.03-.41.5-.59.88-.42 1.83 1.17 3.89 2.22 5.45 3.22.5.31.85.15.97-.42.23-1.17.78-4.11.9-5.33.06-.51.33-.74.75-.56.23.09 1.47.94 2.29 1.73.33.31.56.61.64.91.06.3.01.75-.33.75z"
+                    />
+                </svg>
+                Войти через Telegram
+            </button>
+
+            <div class="loading" id="loading">Идет авторизация...</div>
+
+            <div class="error" id="error"></div>
+
+            <div class="benefits">
+                <h3>Преимущества регистрации</h3>
+                <ul>
+                    <li>Быстрый вход в один клик</li>
+                    <li>Не нужно запоминать пароль</li>
+                    <li>Безопасная авторизация</li>
+                    <li>Мгненный доступ ко всем функциям</li>
+                </ul>
+            </div>
+        </div>
+
+        <script>
+            function initTelegramAuth() {
+                const loading = document.getElementById("loading");
+                const error = document.getElementById("error");
+
+                loading.style.display = "block";
+                error.style.display = "none";
+
+                // Создаем скрипт Telegram Widget
+                const script = document.createElement("script");
+                script.src = "https://telegram.org/js/telegram-widget.js?22";
+                script.setAttribute(
+                    "data-telegram-login",
+                    "{{ bot_username }}",
+                );
+                script.setAttribute("data-size", "large");
+                script.setAttribute("data-onauth", "onTelegramAuth");
+                script.setAttribute("data-request-access", "write");
+                script.async = true;
+
+                script.onload = function () {
+                    loading.style.display = "none";
+                };
+
+                script.onerror = function () {
+                    loading.style.display = "none";
+                    showError("Ошибка загрузки виджета Telegram");
+                };
+
+                document
+                    .getElementById("telegram-login-container")
+                    .appendChild(script);
+            }
+
+            // Функция обратного вызова для Telegram
+            window.onTelegramAuth = function (user) {
+                const loading = document.getElementById("loading");
+                const error = document.getElementById("error");
+
+                loading.style.display = "block";
+                error.style.display = "none";
+
+                // Отправляем данные на сервер
+                fetch("/auth/telegram", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(user),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        loading.style.display = "none";
+
+                        if (data.success) {
+                            window.location.href = data.redirect;
+                        } else {
+                            showError(data.error || "Ошибка авторизации");
+                        }
+                    })
+                    .catch((err) => {
+                        loading.style.display = "none";
+                        showError("Ошибка соединения с сервером");
+                    });
+            };
+
+            function showError(message) {
+                const error = document.getElementById("error");
+                error.textContent = message;
+                error.style.display = "block";
+            }
+
+            // Инициализируем виджет при загрузке страницы
+            document.addEventListener("DOMContentLoaded", function () {
+                // Можно автоматически инициализировать или оставить по кнопке
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>123</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&amp;family=Manrope:wght@200;300;400;500;600;700;800"
+            type="text/css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Comfortaa", Arial, sans-serif;
+            }
+
+            body {
+                min-height: 100vh;
+                background:
+                    linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.7)),
+                    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23000022"/></svg>');
+                background-size: cover;
+                color: white;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                position: relative;
+                padding: 20px;
+            }
+
+            .stars {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+            }
+
+            .star {
+                position: absolute;
+                background-color: #ffffff;
+                border-radius: 50%;
+                animation: twinkle 3s infinite;
+                box-shadow:
+                    0 0 8px rgba(255, 255, 255, 1),
+                    0 0 12px rgba(255, 255, 255, 0.6);
+            }
+
+            @keyframes twinkle {
+                0%,
+                100% {
+                    opacity: 0.3;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scale(1.2);
+                }
+            }
+
+            .error-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 40px;
+                max-width: 800px;
+                z-index: 10;
+                width: 100%;
+            }
+
+            .moon-container {
+                position: relative;
+                margin-bottom: 40px;
+                animation: float 6s ease-in-out infinite;
+                z-index: 15;
+            }
+
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0px);
+                }
+                50% {
+                    transform: translateY(-20px);
+                }
+            }
+
+            .moon {
+                width: 200px;
+                height: 200px;
+                background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+                border-radius: 50%;
+                position: relative;
+                box-shadow:
+                    0 0 80px rgba(255, 204, 0, 0.9),
+                    inset -20px -20px 40px rgba(0, 0, 0, 0.3),
+                    inset 10px 10px 20px rgba(255, 255, 255, 0.6);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                animation: glow 4s ease-in-out infinite alternate;
+            }
+
+            @keyframes glow {
+                0% {
+                    box-shadow:
+                        0 0 60px rgba(255, 204, 0, 0.8),
+                        inset -20px -20px 40px rgba(0, 0, 0, 0.3);
+                }
+                100% {
+                    box-shadow:
+                        0 0 100px rgba(255, 204, 0, 1),
+                        inset -20px -20px 40px rgba(0, 0, 0, 0.4);
+                }
+            }
+
+            .moon-craters {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+
+            .crater {
+                position: absolute;
+                background: rgba(180, 160, 80, 0.7);
+                border-radius: 50%;
+                animation: craterGlow 3s ease-in-out infinite alternate;
+            }
+
+            @keyframes craterGlow {
+                0% {
+                    background: rgba(160, 140, 60, 0.6);
+                }
+                100% {
+                    background: rgba(200, 180, 100, 0.8);
+                }
+            }
+
+            .crater-1 {
+                width: 40px;
+                height: 40px;
+                top: 30px;
+                left: 40px;
+                animation-delay: 0.2s;
+            }
+            .crater-2 {
+                width: 30px;
+                height: 30px;
+                top: 60px;
+                right: 50px;
+                animation-delay: 0.5s;
+            }
+            .crater-3 {
+                width: 35px;
+                height: 35px;
+                bottom: 40px;
+                left: 60px;
+                animation-delay: 0.8s;
+            }
+            .crater-4 {
+                width: 25px;
+                height: 25px;
+                bottom: 70px;
+                right: 30px;
+                animation-delay: 1.1s;
+            }
+            .crater-5 {
+                width: 32px;
+                height: 32px;
+                top: 100px;
+                left: 20px;
+                animation-delay: 1.4s;
+            }
+
+            .error-number {
+                font-size: 140px;
+                font-weight: 700;
+                color: rgba(255, 255, 255, 0.9);
+                text-shadow:
+                    0 0 20px rgba(255, 255, 255, 0.5),
+                    0 0 40px rgba(255, 204, 0, 0.3);
+                margin-bottom: 10px;
+                line-height: 1;
+                animation: pulse 3s infinite alternate;
+            }
+
+            @keyframes pulse {
+                0% {
+                    text-shadow:
+                        0 0 20px rgba(255, 255, 255, 0.5),
+                        0 0 40px rgba(255, 204, 0, 0.3);
+                }
+                100% {
+                    text-shadow:
+                        0 0 30px rgba(255, 255, 255, 0.7),
+                        0 0 60px rgba(255, 204, 0, 0.5);
+                }
+            }
+
+            .error-title {
+                font-size: 36px;
+                font-weight: 700;
+                margin-bottom: 20px;
+                color: white;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+                position: relative;
+            }
+
+            .error-title::after {
+                content: "";
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100px;
+                height: 3px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.8),
+                    transparent
+                );
+                border-radius: 2px;
+            }
+
+            .error-description {
+                font-size: 20px;
+                line-height: 1.6;
+                color: rgba(255, 255, 255, 0.9);
+                max-width: 600px;
+                margin-bottom: 40px;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            }
+
+            .home-button {
+                font-size: 18px;
+                color: white;
+                text-decoration: none;
+                padding: 15px 40px;
+                border-radius: 30px;
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.25) 0%,
+                    rgba(255, 255, 255, 0.15) 100%
+                );
+                transition: all 0.3s ease;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                position: relative;
+                overflow: hidden;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .home-button::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent
+                );
+                transition: left 0.5s ease;
+            }
+
+            .home-button:hover::before {
+                left: 100%;
+            }
+
+            .home-button:hover {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.35) 0%,
+                    rgba(255, 255, 255, 0.25) 100%
+                );
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+                border: 1px solid rgba(255, 255, 255, 0.4);
+            }
+
+            .floating-elements {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 1;
+            }
+
+            .floating-element {
+                position: absolute;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+                animation: floatElement 15s infinite linear;
+            }
+
+            @keyframes floatElement {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                100% {
+                    transform: translateY(-1000px) rotate(720deg);
+                }
+            }
+
+            .ufo-system {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 25;
+            }
+
+            .ufo {
+                position: absolute;
+                font-size: 24px;
+                color: #ffffff;
+                text-shadow:
+                    0 0 10px #ffffff,
+                    0 0 20px #ffffff,
+                    0 0 30px #ffffff;
+                opacity: 0;
+            }
+
+            .trail-container {
+                position: absolute;
+                pointer-events: none;
+            }
+
+            .particle {
+                position: absolute;
+                animation: particleFloat 2s ease-out forwards;
+            }
+
+            .cube {
+                font-family: monospace;
+                color: #ffffff;
+                text-shadow: 0 0 5px #ffffff;
+            }
+
+            .beam {
+                width: 2px;
+                height: 2px;
+                background: #ffffff;
+                border-radius: 50%;
+                box-shadow: 0 0 6px #ffffff;
+            }
+
+            @keyframes particleFloat {
+                0% {
+                    opacity: 1;
+                    transform: translate(0, 0) scale(1);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translate(var(--move-x), var(--move-y))
+                        scale(0.1);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .moon {
+                    width: 150px;
+                    height: 150px;
+                }
+
+                .error-number {
+                    font-size: 100px;
+                }
+
+                .error-title {
+                    font-size: 28px;
+                }
+
+                .error-description {
+                    font-size: 18px;
+                    padding: 0 10px;
+                }
+
+                .error-container {
+                    padding: 20px;
+                }
+
+                .ufo {
+                    font-size: 20px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .moon {
+                    width: 120px;
+                    height: 120px;
+                }
+
+                .error-number {
+                    font-size: 80px;
+                }
+
+                .error-title {
+                    font-size: 24px;
+                }
+
+                .error-description {
+                    font-size: 16px;
+                    padding: 0 5px;
+                }
+
+                .home-button {
+                    padding: 12px 30px;
+                    font-size: 16px;
+                }
+
+                body {
+                    padding: 10px;
+                }
+
+                .ufo {
+                    font-size: 18px;
+                }
+
+                .crater-1 {
+                    width: 30px;
+                    height: 30px;
+                    top: 20px;
+                    left: 30px;
+                }
+                .crater-2 {
+                    width: 20px;
+                    height: 20px;
+                    top: 45px;
+                    right: 35px;
+                }
+                .crater-3 {
+                    width: 25px;
+                    height: 25px;
+                    bottom: 30px;
+                    left: 45px;
+                }
+                .crater-4 {
+                    width: 18px;
+                    height: 18px;
+                    bottom: 50px;
+                    right: 20px;
+                }
+                .crater-5 {
+                    width: 22px;
+                    height: 22px;
+                    top: 70px;
+                    left: 15px;
+                }
+            }
+
+            @media (max-width: 360px) {
+                .moon {
+                    width: 100px;
+                    height: 100px;
+                }
+
+                .error-number {
+                    font-size: 70px;
+                }
+
+                .error-title {
+                    font-size: 22px;
+                }
+
+                .error-description {
+                    font-size: 14px;
+                }
+
+                .home-button {
+                    padding: 10px 25px;
+                    font-size: 14px;
+                }
+
+                .crater-1 {
+                    width: 25px;
+                    height: 25px;
+                    top: 15px;
+                    left: 25px;
+                }
+                .crater-2 {
+                    width: 15px;
+                    height: 15px;
+                    top: 35px;
+                    right: 25px;
+                }
+                .crater-3 {
+                    width: 20px;
+                    height: 20px;
+                    bottom: 20px;
+                    left: 35px;
+                }
+                .crater-4 {
+                    width: 12px;
+                    height: 12px;
+                    bottom: 35px;
+                    right: 15px;
+                }
+                .crater-5 {
+                    width: 18px;
+                    height: 18px;
+                    top: 55px;
+                    left: 10px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="stars" id="stars"></div>
+        <div class="floating-elements" id="floatingElements"></div>
+
+        <script>
+            function createStars() {
+                const starsContainer = document.getElementById("stars");
+
+                for (let i = 0; i < 100; i++) {
+                    const star = document.createElement("div");
+                    star.className = "star";
+
+                    const size = Math.random() * 3 + 1;
+                    const left = Math.random() * 100;
+                    const top = Math.random() * 100;
+                    const delay = Math.random() * 3;
+                    const duration = Math.random() * 3 + 2;
+
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.left = `${left}%`;
+                    star.style.top = `${top}%`;
+                    star.style.animationDelay = `${delay}s`;
+                    star.style.animationDuration = `${duration}s`;
+
+                    starsContainer.appendChild(star);
+                }
+            }
+
+            function createFloatingElements() {
+                const container = document.getElementById("floatingElements");
+                const elements = ["●", "◆", "▲", "✦", "■", "♦"];
+
+                for (let i = 0; i < 20; i++) {
+                    const element = document.createElement("div");
+                    element.className = "floating-element";
+                    element.textContent =
+                        elements[Math.floor(Math.random() * elements.length)];
+
+                    const size = Math.random() * 15 + 8;
+                    const left = Math.random() * 100;
+                    const delay = Math.random() * 15;
+                    const duration = Math.random() * 20 + 10;
+                    const opacity = Math.random() * 0.2 + 0.05;
+
+                    element.style.width = `${size}px`;
+                    element.style.height = `${size}px`;
+                    element.style.left = `${left}%`;
+                    element.style.top = `${100 + Math.random() * 20}%`;
+                    element.style.animationDelay = `${delay}s`;
+                    element.style.animationDuration = `${duration}s`;
+                    element.style.opacity = opacity;
+                    element.style.fontSize = `${size}px`;
+                    element.style.color = `rgba(255, 255, 255, ${opacity})`;
+
+                    container.appendChild(element);
+                }
+            }
+
+            class UFOSystem {
+                constructor() {
+                    this.container = document.createElement("div");
+                    this.container.className = "ufo-system";
+                    document.body.appendChild(this.container);
+
+                    this.trailContainer = document.createElement("div");
+                    this.trailContainer.className = "trail-container";
+                    this.container.appendChild(this.trailContainer);
+
+                    this.ufo = null;
+                    this.isFlying = false;
+                    this.hasStarted = false;
+                }
+
+                createUFO() {
+                    if (this.isFlying) return;
+
+                    this.ufo = document.createElement("div");
+                    this.ufo.className = "ufo";
+                    this.ufo.innerHTML = "➤";
+                    this.ufo.style.fontSize = "24px";
+                    this.container.appendChild(this.ufo);
+
+                    this.flyUFO();
+                }
+
+                flyUFO() {
+                    this.isFlying = true;
+                    const startY = 85;
+                    let startTime = Date.now();
+                    const duration = 4000;
+
+                    const animate = () => {
+                        const currentTime = Date.now();
+                        const progress = (currentTime - startTime) / duration;
+
+                        if (progress < 0.1) {
+                            this.ufo.style.opacity = (
+                                progress / 0.1
+                            ).toString();
+                        } else if (progress > 0.9) {
+                            this.ufo.style.opacity = (
+                                (1 - progress) /
+                                0.1
+                            ).toString();
+                        } else {
+                            this.ufo.style.opacity = "1";
+                        }
+
+                        if (progress > 1) {
+                            this.ufo.remove();
+                            this.isFlying = false;
+                            return;
+                        }
+
+                        const baseX = -30 + progress * (window.innerWidth + 60);
+                        const shakeX = Math.sin(progress * 50) * 1.5;
+                        const shakeY = Math.sin(progress * 45) * 1;
+                        const x = baseX + shakeX;
+                        const y = startY + shakeY;
+
+                        this.ufo.style.left = `${x}px`;
+                        this.ufo.style.top = `${y}px`;
+
+                        this.createTrailParticles(x, y);
+
+                        requestAnimationFrame(animate);
+                    };
+
+                    animate();
+                }
+
+                createTrailParticles(ufoX, ufoY) {
+                    const trailX = ufoX - 20;
+                    const trailY = ufoY + 12;
+
+                    if (Math.random() > 0.4) {
+                        this.createParticle(
+                            trailX,
+                            trailY,
+                            "cube",
+                            "■",
+                            -(Math.random() * 40 + 20),
+                            (Math.random() - 0.5) * 15,
+                        );
+                    }
+
+                    if (Math.random() > 0.6) {
+                        this.createParticle(
+                            trailX,
+                            trailY,
+                            "beam",
+                            "",
+                            -(Math.random() * 60 + 30),
+                            (Math.random() - 0.5) * 20,
+                        );
+                    }
+                }
+
+                createParticle(x, y, type, content, moveX, moveY) {
+                    const particle = document.createElement("div");
+                    particle.className = `particle ${type}`;
+
+                    if (type === "cube") {
+                        particle.textContent = content;
+                        particle.style.fontSize = `${Math.random() * 6 + 4}px`;
+                        particle.style.color = "#ffffff";
+                    }
+
+                    particle.style.left = `${x}px`;
+                    particle.style.top = `${y}px`;
+                    particle.style.setProperty("--move-x", `${moveX}px`);
+                    particle.style.setProperty("--move-y", `${moveY}px`);
+
+                    this.trailContainer.appendChild(particle);
+
+                    setTimeout(() => {
+                        if (particle.parentNode) {
+                            particle.parentNode.removeChild(particle);
+                        }
+                    }, 2000);
+                }
+
+                start() {
+                    setTimeout(() => {
+                        this.createUFO();
+                        setInterval(() => {
+                            this.createUFO();
+                        }, 60000);
+                    }, 60000);
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                createStars();
+                createFloatingElements();
+
+                const ufoSystem = new UFOSystem();
+                ufoSystem.start();
+            });
+        </script>
+    </body>
+</html>

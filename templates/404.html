@@ -1,0 +1,2110 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Страница не найдена | СПА-салон Luna</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&amp;family=Manrope:wght@200;300;400;500;600;700;800"
+            type="text/css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <style>
+            /* Основные стили страницы 404 */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Comfortaa", Arial, sans-serif;
+            }
+
+            body {
+                min-height: 100vh;
+                background:
+                    linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.7)),
+                    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23000022"/></svg>');
+                background-size: cover;
+                color: white;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                position: relative;
+                padding: 20px;
+                cursor: default;
+            }
+
+            /* Стили для музыкального плеера */
+            #music-player-container {
+                position: fixed;
+                left: 20px;
+                bottom: 20px;
+                z-index: 1000;
+                opacity: 0;
+                transform: translateX(-20px);
+                transition: all 0.5s ease-in-out;
+            }
+
+            #music-player-container.show {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            .music-player {
+                --primary-color: #6366f1;
+                --text-color: #27272a;
+                --text-secondary: #52525b;
+                --border-color: #a1a1aa;
+                --bg-color: #ffffff;
+                --shadow-color: rgba(0, 0, 0, 0.1);
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                -webkit-font-smoothing: antialiased;
+                user-select: none;
+                position: relative;
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.2) 0%,
+                    rgba(255, 255, 255, 0.1) 100%
+                );
+                backdrop-filter: blur(10px);
+                border-radius: 16px;
+                padding: 10px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                box-shadow:
+                    0 4px 15px rgba(0, 0, 0, 0.3),
+                    0 0 30px rgba(255, 204, 0, 0.1);
+            }
+
+            .player-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                position: relative;
+            }
+
+            /* Диск с анимацией */
+            .disc-container {
+                position: relative;
+                z-index: 0;
+                height: 64px;
+                margin-bottom: -8px;
+                transition: all 0.2s ease;
+            }
+
+            .player-container:hover .disc-container {
+                height: 0;
+            }
+
+            .disc {
+                width: 128px;
+                height: 128px;
+                border: 4px solid rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                box-shadow: 0 4px 6px var(--shadow-color);
+                animation: spin 3s linear infinite;
+                animation-play-state: paused;
+                transition: all 0.5s ease;
+                background: rgba(0, 0, 0, 0.3);
+            }
+
+            .disc.playing {
+                animation-play-state: running;
+            }
+
+            .disc-inner {
+                position: absolute;
+                top: 48px;
+                left: 48px;
+                width: 32px;
+                height: 32px;
+                background: rgba(255, 255, 255, 0.2);
+                border: 4px solid rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                box-shadow: 0 1px 2px var(--shadow-color);
+                z-index: 10;
+            }
+
+            /* Карточка плеера */
+            .player-card {
+                z-index: 30;
+                display: flex;
+                flex-direction: column;
+                width: 160px;
+                height: 80px;
+                background: rgba(255, 255, 255, 0.15);
+                backdrop-filter: blur(10px);
+                box-shadow: 0 4px 6px var(--shadow-color);
+                border-radius: 16px;
+                transition: all 0.3s ease;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .player-container:hover .player-card {
+                height: 160px;
+                width: 288px;
+            }
+
+            /* Верхняя часть карточки */
+            .card-top {
+                display: flex;
+                flex-direction: row;
+                width: 100%;
+                height: 0;
+                overflow: hidden;
+            }
+
+            .player-container:hover .card-top {
+                height: 80px;
+            }
+
+            .small-disc-wrapper {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 96px;
+                height: 96px;
+                opacity: 0;
+                transition: all 0.1s ease;
+            }
+
+            .player-container:hover .small-disc-wrapper {
+                opacity: 1;
+                top: -24px;
+                left: -16px;
+            }
+
+            .small-disc {
+                width: 96px;
+                height: 96px;
+                border: 4px solid rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                box-shadow: 0 4px 6px var(--shadow-color);
+                background: rgba(0, 0, 0, 0.3);
+                animation: spin 3s linear infinite;
+                animation-play-state: paused;
+            }
+
+            .small-disc.playing {
+                animation-play-state: running;
+            }
+
+            .small-disc-inner {
+                position: absolute;
+                top: 36px;
+                left: 36px;
+                width: 24px;
+                height: 24px;
+                background: rgba(255, 255, 255, 0.2);
+                border: 4px solid rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                box-shadow: 0 1px 2px var(--shadow-color);
+                z-index: 10;
+            }
+
+            /* Информация о треке */
+            .track-info {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                width: 100%;
+                padding-left: 12px;
+                margin-left: -96px;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+
+            .player-container:hover .track-info {
+                margin-left: -12px;
+            }
+
+            .track-name {
+                font-size: 1.25rem;
+                font-weight: bold;
+                color: white;
+                margin: 0;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .track-artist {
+                color: rgba(255, 255, 255, 0.8);
+                margin: 0;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            /* Прогресс бар */
+            .progress-container {
+                display: flex;
+                flex-direction: row;
+                margin: 12px 12px 0 12px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 6px;
+                min-height: 16px;
+            }
+
+            .player-container:hover .progress-container {
+                margin-top: 0;
+            }
+
+            .time-start,
+            .time-end {
+                display: none;
+                font-size: 0.875rem;
+                color: rgba(255, 255, 255, 0.8);
+                min-width: 40px;
+                text-align: center;
+            }
+
+            .player-container:hover .time-start,
+            .player-container:hover .time-end {
+                display: inline-block;
+            }
+
+            .time-start {
+                padding-left: 12px;
+            }
+
+            .time-end {
+                padding-right: 12px;
+            }
+
+            .progress-bar {
+                flex-grow: 1;
+                width: 96px;
+                height: 4px;
+                margin: auto 8px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 999px;
+                appearance: none;
+                outline: none;
+                cursor: pointer;
+            }
+
+            .player-container:hover .progress-bar {
+                width: 100%;
+            }
+
+            .progress-bar::-webkit-slider-thumb {
+                appearance: none;
+                width: 12px;
+                height: 12px;
+                background: white;
+                border: 2px solid rgba(255, 255, 255, 0.5);
+                border-radius: 50%;
+                cursor: pointer;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            }
+
+            .progress-bar::-moz-range-thumb {
+                width: 12px;
+                height: 12px;
+                background: white;
+                border: 2px solid rgba(255, 255, 255, 0.5);
+                border-radius: 50%;
+                cursor: pointer;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            }
+
+            /* Элементы управления */
+            .controls {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                flex-grow: 1;
+                margin: 0 12px;
+                gap: 20px;
+            }
+
+            .control-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 48px;
+                height: 100%;
+                cursor: pointer;
+                color: white;
+                transition: all 0.2s ease;
+            }
+
+            .control-btn:hover {
+                color: #ffed4e;
+                transform: scale(1.1);
+            }
+
+            .play-mode {
+                width: 0;
+                overflow: hidden;
+            }
+
+            .player-container:hover .play-mode {
+                width: 48px;
+            }
+
+            .play-mode input {
+                display: none;
+            }
+
+            .play-mode input:checked + .repeat-icon {
+                display: none;
+            }
+
+            .play-mode input:checked ~ .shuffle-icon {
+                display: inline-block;
+            }
+
+            .shuffle-icon {
+                display: none;
+            }
+
+            /* Кнопка воспроизведения/паузы */
+            .play-status {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 48px;
+                height: 100%;
+                cursor: pointer;
+            }
+
+            .play-status input {
+                display: none;
+            }
+
+            .play-status input:checked + .play-icon {
+                display: none;
+            }
+
+            .play-status input:checked ~ .pause-icon {
+                display: inline-block;
+            }
+
+            .pause-icon {
+                display: none;
+            }
+
+            /* Кнопка списка */
+            .list-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 0;
+                height: 100%;
+                cursor: pointer;
+                overflow: hidden;
+            }
+
+            .player-container:hover .list-btn {
+                width: 48px;
+            }
+
+            /* Анимация вращения */
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            /* SVG стили */
+            .svg-icon {
+                stroke: currentColor;
+                stroke-width: 2;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                fill: none;
+            }
+
+            .icon-gray {
+                color: rgba(255, 255, 255, 0.8);
+            }
+
+            /* Адаптивность для плеера */
+            @media (max-width: 768px) {
+                #music-player-container {
+                    left: 10px;
+                    bottom: 10px;
+                }
+
+                .player-container:hover .player-card {
+                    width: 260px;
+                }
+
+                .music-player {
+                    transform: scale(0.9);
+                    transform-origin: left bottom;
+                }
+            }
+
+            @media (max-width: 480px) {
+                #music-player-container {
+                    left: 5px;
+                    bottom: 5px;
+                }
+
+                .music-player {
+                    transform: scale(0.8);
+                }
+
+                .player-container:hover .player-card {
+                    width: 240px;
+                }
+            }
+
+            /* Контейнер для погоды */
+            #weather-container {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 320px;
+                z-index: 1000;
+                opacity: 0;
+                transform: translateY(20px);
+                transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+
+            #weather-container.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* Стили погодного виджета */
+            .weather-card {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.25) 0%,
+                    rgba(255, 255, 255, 0.15) 100%
+                );
+                backdrop-filter: blur(10px);
+                border-radius: 30px;
+                padding: 25px;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                box-shadow:
+                    0 4px 15px rgba(0, 0, 0, 0.3),
+                    0 0 30px rgba(255, 204, 0, 0.1);
+                color: white;
+                overflow: hidden;
+                position: relative;
+                transition: all 0.3s ease;
+            }
+
+            .weather-card:hover {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.35) 0%,
+                    rgba(255, 255, 255, 0.25) 100%
+                );
+                transform: translateY(-2px);
+                box-shadow:
+                    0 6px 20px rgba(0, 0, 0, 0.4),
+                    0 0 40px rgba(255, 204, 0, 0.2);
+                border: 1px solid rgba(255, 255, 255, 0.4);
+            }
+
+            .weather-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent
+                );
+                transition: left 0.5s ease;
+            }
+
+            .weather-card:hover::before {
+                left: 100%;
+            }
+
+            .location {
+                font-size: 18px;
+                font-weight: bold;
+                color: #fff;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding-bottom: 15px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            }
+
+            .weather-main {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
+                padding-bottom: 20px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .temperature {
+                font-size: 48px;
+                font-weight: bold;
+                background: linear-gradient(180deg, #fff, #ffed4e);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                line-height: 1;
+                text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+            }
+
+            .unit {
+                font-size: 24px;
+                color: #ffed4e;
+                vertical-align: super;
+                margin-left: 2px;
+                text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+            }
+
+            .weather-icon {
+                margin-left: auto;
+                width: 60px;
+                height: 60px;
+                filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+            }
+
+            .description {
+                font-size: 16px;
+                color: rgba(255, 255, 255, 0.9);
+                margin-bottom: 20px;
+                text-align: center;
+                font-weight: 500;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            }
+
+            .details {
+                display: grid;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+
+            .detail-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .detail-label {
+                color: rgba(255, 255, 255, 0.8);
+                font-weight: 400;
+            }
+
+            .detail-value {
+                color: #fff;
+                font-weight: 600;
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+            }
+
+            .source {
+                font-size: 11px;
+                color: rgba(255, 255, 255, 0.6);
+                text-align: center;
+                margin-top: 10px;
+                text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+            }
+
+            .loading,
+            .error {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.15) 0%,
+                    rgba(255, 255, 255, 0.1) 100%
+                );
+                backdrop-filter: blur(10px);
+                border-radius: 30px;
+                padding: 30px;
+                text-align: center;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            .loading {
+                color: #ffed4e;
+            }
+
+            .error {
+                color: #ff6b6b;
+            }
+
+            /* Адаптивность для погоды */
+            @media (max-width: 768px) {
+                #weather-container {
+                    width: calc(100% - 40px);
+                    right: 20px;
+                    bottom: 20px;
+                    max-width: 320px;
+                    margin: 0 auto;
+                }
+
+                .weather-card {
+                    padding: 20px;
+                    border-radius: 25px;
+                }
+
+                .temperature {
+                    font-size: 42px;
+                }
+
+                .weather-icon {
+                    width: 50px;
+                    height: 50px;
+                }
+            }
+
+            /* Оригинальные стили страницы 404 */
+            .stars {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+            }
+
+            .star {
+                position: absolute;
+                background-color: #ffffff;
+                border-radius: 50%;
+                animation: twinkle 3s infinite;
+                box-shadow:
+                    0 0 8px rgba(255, 255, 255, 1),
+                    0 0 12px rgba(255, 255, 255, 0.6);
+            }
+
+            @keyframes twinkle {
+                0%,
+                100% {
+                    opacity: 0.3;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scale(1.2);
+                }
+            }
+
+            .error-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 40px;
+                max-width: 800px;
+                z-index: 10;
+                width: 100%;
+            }
+
+            .moon-container {
+                position: relative;
+                margin-bottom: 40px;
+                animation: float 6s ease-in-out infinite;
+                z-index: 15;
+            }
+
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0px);
+                }
+                50% {
+                    transform: translateY(-20px);
+                }
+            }
+
+            .moon {
+                width: 200px;
+                height: 200px;
+                background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+                border-radius: 50%;
+                position: relative;
+                box-shadow:
+                    0 0 80px rgba(255, 204, 0, 0.9),
+                    inset -20px -20px 40px rgba(0, 0, 0, 0.3),
+                    inset 10px 10px 20px rgba(255, 255, 255, 0.6);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                animation: glow 4s ease-in-out infinite alternate;
+            }
+
+            @keyframes glow {
+                0% {
+                    box-shadow:
+                        0 0 60px rgba(255, 204, 0, 0.8),
+                        inset -20px -20px 40px rgba(0, 0, 0, 0.3);
+                }
+                100% {
+                    box-shadow:
+                        0 0 100px rgba(255, 204, 0, 1),
+                        inset -20px -20px 40px rgba(0, 0, 0, 0.4);
+                }
+            }
+
+            .moon-craters {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+
+            .crater {
+                position: absolute;
+                background: rgba(180, 160, 80, 0.7);
+                border-radius: 50%;
+                animation: craterGlow 3s ease-in-out infinite alternate;
+            }
+
+            @keyframes craterGlow {
+                0% {
+                    background: rgba(160, 140, 60, 0.6);
+                }
+                100% {
+                    background: rgba(200, 180, 100, 0.8);
+                }
+            }
+
+            .crater-1 {
+                width: 40px;
+                height: 40px;
+                top: 30px;
+                left: 40px;
+                animation-delay: 0.2s;
+            }
+            .crater-2 {
+                width: 30px;
+                height: 30px;
+                top: 60px;
+                right: 50px;
+                animation-delay: 0.5s;
+            }
+            .crater-3 {
+                width: 35px;
+                height: 35px;
+                bottom: 40px;
+                left: 60px;
+                animation-delay: 0.8s;
+            }
+            .crater-4 {
+                width: 25px;
+                height: 25px;
+                bottom: 70px;
+                right: 30px;
+                animation-delay: 1.1s;
+            }
+            .crater-5 {
+                width: 32px;
+                height: 32px;
+                top: 100px;
+                left: 20px;
+                animation-delay: 1.4s;
+            }
+
+            .error-number {
+                font-size: 140px;
+                font-weight: 700;
+                color: rgba(255, 255, 255, 0.9);
+                text-shadow:
+                    0 0 20px rgba(255, 255, 255, 0.5),
+                    0 0 40px rgba(255, 204, 0, 0.3);
+                margin-bottom: 10px;
+                line-height: 1;
+                animation: pulse 3s infinite alternate;
+            }
+
+            @keyframes pulse {
+                0% {
+                    text-shadow:
+                        0 0 20px rgba(255, 255, 255, 0.5),
+                        0 0 40px rgba(255, 204, 0, 0.3);
+                }
+                100% {
+                    text-shadow:
+                        0 0 30px rgba(255, 255, 255, 0.7),
+                        0 0 60px rgba(255, 204, 0, 0.5);
+                }
+            }
+
+            .error-title {
+                font-size: 36px;
+                font-weight: 700;
+                margin-bottom: 20px;
+                color: white;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+                position: relative;
+            }
+
+            .error-title::after {
+                content: "";
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100px;
+                height: 3px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.8),
+                    transparent
+                );
+                border-radius: 2px;
+            }
+
+            .error-description {
+                font-size: 20px;
+                line-height: 1.6;
+                color: rgba(255, 255, 255, 0.9);
+                max-width: 600px;
+                margin-bottom: 40px;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            }
+
+            .home-button {
+                font-size: 18px;
+                color: white;
+                text-decoration: none;
+                padding: 15px 40px;
+                border-radius: 30px;
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.25) 0%,
+                    rgba(255, 255, 255, 0.15) 100%
+                );
+                transition: all 0.3s ease;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                position: relative;
+                overflow: hidden;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .home-button::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent
+                );
+                transition: left 0.5s ease;
+            }
+
+            .home-button:hover::before {
+                left: 100%;
+            }
+
+            .home-button:hover {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.35) 0%,
+                    rgba(255, 255, 255, 0.25) 100%
+                );
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+                border: 1px solid rgba(255, 255, 255, 0.4);
+            }
+
+            .floating-elements {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 1;
+            }
+
+            .floating-element {
+                position: absolute;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+                animation: floatElement 15s infinite linear;
+            }
+
+            @keyframes floatElement {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                100% {
+                    transform: translateY(-1000px) rotate(720deg);
+                }
+            }
+
+            .ufo-system {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 25;
+            }
+
+            .ufo {
+                position: absolute;
+                font-size: 24px;
+                color: #ffffff;
+                text-shadow:
+                    0 0 10px #ffffff,
+                    0 0 20px #ffffff,
+                    0 0 30px #ffffff;
+                opacity: 0;
+            }
+
+            .trail-container {
+                position: absolute;
+                pointer-events: none;
+            }
+
+            .particle {
+                position: absolute;
+                animation: particleFloat 2s ease-out forwards;
+            }
+
+            .cube {
+                font-family: monospace;
+                color: #ffffff;
+                text-shadow: 0 0 5px #ffffff;
+            }
+
+            .beam {
+                width: 2px;
+                height: 2px;
+                background: #ffffff;
+                border-radius: 50%;
+                box-shadow: 0 0 6px #ffffff;
+            }
+
+            @keyframes particleFloat {
+                0% {
+                    opacity: 1;
+                    transform: translate(0, 0) scale(1);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translate(var(--move-x), var(--move-y))
+                        scale(0.1);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .moon {
+                    width: 150px;
+                    height: 150px;
+                }
+
+                .error-number {
+                    font-size: 100px;
+                }
+
+                .error-title {
+                    font-size: 28px;
+                }
+
+                .error-description {
+                    font-size: 18px;
+                    padding: 0 10px;
+                }
+
+                .error-container {
+                    padding: 20px;
+                }
+
+                .ufo {
+                    font-size: 20px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .moon {
+                    width: 120px;
+                    height: 120px;
+                }
+
+                .error-number {
+                    font-size: 80px;
+                }
+
+                .error-title {
+                    font-size: 24px;
+                }
+
+                .error-description {
+                    font-size: 16px;
+                    padding: 0 5px;
+                }
+
+                .home-button {
+                    padding: 12px 30px;
+                    font-size: 16px;
+                }
+
+                body {
+                    padding: 10px;
+                }
+
+                .ufo {
+                    font-size: 18px;
+                }
+
+                .crater-1 {
+                    width: 30px;
+                    height: 30px;
+                    top: 20px;
+                    left: 30px;
+                }
+                .crater-2 {
+                    width: 20px;
+                    height: 20px;
+                    top: 45px;
+                    right: 35px;
+                }
+                .crater-3 {
+                    width: 25px;
+                    height: 25px;
+                    bottom: 30px;
+                    left: 45px;
+                }
+                .crater-4 {
+                    width: 18px;
+                    height: 18px;
+                    bottom: 50px;
+                    right: 20px;
+                }
+                .crater-5 {
+                    width: 22px;
+                    height: 22px;
+                    top: 70px;
+                    left: 15px;
+                }
+            }
+
+            @media (max-width: 360px) {
+                .moon {
+                    width: 100px;
+                    height: 100px;
+                }
+
+                .error-number {
+                    font-size: 70px;
+                }
+
+                .error-title {
+                    font-size: 22px;
+                }
+
+                .error-description {
+                    font-size: 14px;
+                }
+
+                .home-button {
+                    padding: 10px 25px;
+                    font-size: 14px;
+                }
+
+                .crater-1 {
+                    width: 25px;
+                    height: 25px;
+                    top: 15px;
+                    left: 25px;
+                }
+                .crater-2 {
+                    width: 15px;
+                    height: 15px;
+                    top: 35px;
+                    right: 25px;
+                }
+                .crater-3 {
+                    width: 20px;
+                    height: 20px;
+                    bottom: 20px;
+                    left: 35px;
+                }
+                .crater-4 {
+                    width: 12px;
+                    height: 12px;
+                    bottom: 35px;
+                    right: 15px;
+                }
+                .crater-5 {
+                    width: 18px;
+                    height: 18px;
+                    top: 55px;
+                    left: 10px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Контейнер для музыкального плеера (изначально скрыт) -->
+        <div id="music-player-container"></div>
+
+        <div class="stars" id="stars"></div>
+        <div class="floating-elements" id="floatingElements"></div>
+
+        <!-- Контейнер для погоды (изначально скрыт) -->
+        <div id="weather-container"></div>
+
+        <!-- Оригинальное содержимое страницы 404 -->
+        <div class="error-container">
+            <div class="moon-container">
+                <div class="moon">
+                    <div class="moon-craters">
+                        <div class="crater crater-1"></div>
+                        <div class="crater crater-2"></div>
+                        <div class="crater crater-3"></div>
+                        <div class="crater crater-4"></div>
+                        <div class="crater crater-5"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-number">404</div>
+            <h1 class="error-title">Страница не найдена</h1>
+            <p class="error-description">
+                К сожалению, запрашиваемая вами страница не существует.
+                Возможно, она была перемещена или удалена. Мы приглашаем вас
+                вернуться на главную страницу нашего СПА-салона.
+            </p>
+            <a href="/" class="home-button">
+                <i class="fas fa-home"></i>
+                Вернуться на главную
+            </a>
+        </div>
+
+        <script>
+            // Список аудиофайлов из /static/music/
+            const musicTracks = [
+                {
+                    id: 1,
+                    title: "Save Room",
+                    artist: "Boogrov, Atomic Heart",
+                    src: "/static/music/Boogrov, Atomic Heart - Save Room.mp3",
+                    duration: "3:45",
+                },
+                {
+                    id: 2,
+                    title: "Inside Nora",
+                    artist: "Boogrov, Zoanoid, Atomic Heart",
+                    src: "/static/music/Boogrov, Zoanoid, Atomic Heart - Inside Nora.mp3",
+                    duration: "4:20",
+                },
+                {
+                    id: 3,
+                    title: "Стрекоза",
+                    artist: "Boogrov, Zoanoid, Atomic Heart",
+                    src: "/static/music/Boogrov, Zoanoid, Atomic Heart - Стрекоза.mp3",
+                    duration: "5:10",
+                },
+                {
+                    id: 4,
+                    title: "It's been so long",
+                    artist: "Gysher",
+                    src: "/static/music/Gysher - It's been so long.mp3",
+                    duration: "4:55",
+                },
+                {
+                    id: 5,
+                    title: "Quiet Dive",
+                    artist: "Øneheart, Atomic Heart",
+                    src: "/static/music/Øneheart, Atomic Heart - Quiet Dive.mp3",
+                    duration: "3:30",
+                },
+            ];
+
+            // Иконки погоды
+            const WeatherIcons = {
+                sunny: `
+                    <svg viewBox="0 0 24 24" class="weather-icon">
+                        <circle cx="12" cy="12" r="5" fill="#FFB300" />
+                        <g fill="#FFB300" opacity="0.7">
+                            <rect x="11" y="3" width="2" height="4" rx="1" />
+                            <rect x="11" y="17" width="2" height="4" rx="1" />
+                            <rect x="3" y="11" width="4" height="2" rx="1" />
+                            <rect x="17" y="11" width="4" height="2" rx="1" />
+                            <rect x="5" y="5" width="3" height="3" rx="1" transform="rotate(45 12 12)" />
+                            <rect x="16" y="5" width="3" height="3" rx="1" transform="rotate(45 12 12)" />
+                            <rect x="5" y="16" width="3" height="3" rx="1" transform="rotate(45 12 12)" />
+                            <rect x="16" y="16" width="3" height="3" rx="1" transform="rotate(45 12 12)" />
+                        </g>
+                    </svg>
+                `,
+                rainy: `
+                    <svg viewBox="0 0 24 24" class="weather-icon">
+                        <path d="M9 12l-2 4" stroke="#2196F3" stroke-width="2" stroke-linecap="round" />
+                        <path d="M13 12l-2 4" stroke="#2196F3" stroke-width="2" stroke-linecap="round" />
+                        <path d="M17 12l-2 4" stroke="#2196F3" stroke-width="2" stroke-linecap="round" />
+                        <path d="M19 10a7 7 0 10-12 4.3" stroke="#64B5F6" stroke-width="2" fill="#E3F2FD" />
+                        <path d="M12 3v1" stroke="#64B5F6" stroke-width="2" stroke-linecap="round" />
+                        <path d="M18.36 5.64l.71.71" stroke="#64B5F6" stroke-width="2" stroke-linecap="round" />
+                        <path d="M21 12h-1" stroke="#64B5F6" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                `,
+                cloudy: `
+                    <svg viewBox="0 0 24 24" class="weather-icon">
+                        <path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z" fill="#BDBDBD" />
+                        <circle cx="8" cy="9" r="2" fill="#E0E0E0" />
+                        <circle cx="14" cy="8" r="3" fill="#E0E0E0" />
+                        <circle cx="18" cy="8" r="2" fill="#E0E0E0" />
+                    </svg>
+                `,
+                snowy: `
+                    <svg viewBox="0 0 24 24" class="weather-icon">
+                        <path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z" fill="#E3F2FD" />
+                        <path d="M8 16l-1 2" stroke="#90CAF9" stroke-width="1.5" stroke-linecap="round" />
+                        <path d="M12 16l-1 2" stroke="#90CAF9" stroke-width="1.5" stroke-linecap="round" />
+                        <path d="M16 16l-1 2" stroke="#90CAF9" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                `,
+                default: `
+                    <svg viewBox="0 0 24 24" class="weather-icon">
+                        <circle cx="12" cy="12" r="8" fill="#81D4FA" />
+                        <circle cx="9" cy="9" r="2" fill="#E1F5FE" />
+                        <circle cx="15" cy="9" r="2.5" fill="#E1F5FE" />
+                    </svg>
+                `,
+            };
+
+            // Функция определения иконки по описанию погоды
+            function getWeatherIcon(description) {
+                const desc = description.toLowerCase();
+                if (desc.includes("дождь") || desc.includes("rain")) {
+                    return WeatherIcons.rainy;
+                } else if (desc.includes("облачно") || desc.includes("cloud")) {
+                    return WeatherIcons.cloudy;
+                } else if (desc.includes("снег") || desc.includes("snow")) {
+                    return WeatherIcons.snowy;
+                } else if (
+                    desc.includes("ясно") ||
+                    desc.includes("солн") ||
+                    desc.includes("sunny") ||
+                    desc.includes("clear")
+                ) {
+                    return WeatherIcons.sunny;
+                }
+                return WeatherIcons.default;
+            }
+
+            // Таймер для музыкального плеера (3 минуты = 180 секунд)
+            let musicPlayerSeconds = 180;
+            const musicPlayerContainer = document.getElementById(
+                "music-player-container",
+            );
+
+            // Таймер для погоды (2 минуты = 120 секунд)
+            let weatherSeconds = 120;
+            const weatherContainer =
+                document.getElementById("weather-container");
+
+            // Глобальные переменные для аудиоплеера
+            let audioPlayer = null;
+            let currentTrackIndex = 0;
+            let isPlaying = false;
+            let isShuffle = false;
+            let isRepeat = false;
+            let updateInterval = null;
+            let userInteracted = false;
+
+            function startMusicPlayerTimer() {
+                if (musicPlayerSeconds > 0) {
+                    musicPlayerSeconds--;
+                    setTimeout(startMusicPlayerTimer, 1000);
+                } else {
+                    // Время вышло, показываем музыкальный плеер
+                    showMusicPlayer();
+                }
+            }
+
+            function startWeatherTimer() {
+                if (weatherSeconds > 0) {
+                    weatherSeconds--;
+                    setTimeout(startWeatherTimer, 1000);
+                } else {
+                    // Время вышло, показываем погоду
+                    showWeather();
+                }
+            }
+
+            // Функция показа музыкального плеера
+            function showMusicPlayer() {
+                // Показываем контейнер с анимацией
+                musicPlayerContainer.classList.add("show");
+
+                // HTML музыкального плеера (без желтой кнопки)
+                const musicPlayerHTML = `
+                    <div class="music-player" id="musicPlayer">
+                        <div class="player-container">
+                            <!-- Вращающийся диск -->
+                            <div class="disc-container">
+                                <svg class="disc" viewBox="0 0 128 128">
+                                    <rect width="128" height="128" fill="black"></rect>
+                                    <circle cx="20" cy="20" r="2" fill="white"></circle>
+                                    <circle cx="40" cy="30" r="2" fill="white"></circle>
+                                    <circle cx="60" cy="10" r="2" fill="white"></circle>
+                                    <circle cx="80" cy="40" r="2" fill="white"></circle>
+                                    <circle cx="100" cy="20" r="2" fill="white"></circle>
+                                    <circle cx="120" cy="50" r="2" fill="white"></circle>
+                                    <circle cx="90" cy="30" r="10" fill="white" fill-opacity="0.5"></circle>
+                                    <circle cx="90" cy="30" r="8" fill="white"></circle>
+                                    <path d="M0 128 Q32 64 64 128 T128 128" fill="purple" stroke="black" stroke-width="1"></path>
+                                    <path d="M0 128 Q32 48 64 128 T128 128" fill="mediumpurple" stroke="black" stroke-width="1"></path>
+                                    <path d="M0 128 Q32 32 64 128 T128 128" fill="rebeccapurple" stroke="black" stroke-width="1"></path>
+                                    <path d="M0 128 Q16 64 32 128 T64 128" fill="purple" stroke="black" stroke-width="1"></path>
+                                    <path d="M64 128 Q80 64 96 128 T128 128" fill="mediumpurple" stroke="black" stroke-width="1"></path>
+                                </svg>
+                                <div class="disc-inner"></div>
+                            </div>
+
+                            <!-- Карточка плеера -->
+                            <div class="player-card">
+                                <!-- Верхняя часть с мини-диском -->
+                                <div class="card-top">
+                                    <div class="small-disc-wrapper">
+                                        <svg class="small-disc" viewBox="0 0 128 128">
+                                            <rect width="128" height="128" fill="black"></rect>
+                                            <circle cx="20" cy="20" r="2" fill="white"></circle>
+                                            <circle cx="40" cy="30" r="2" fill="white"></circle>
+                                            <circle cx="60" cy="10" r="2" fill="white"></circle>
+                                            <circle cx="80" cy="40" r="2" fill="white"></circle>
+                                            <circle cx="100" cy="20" r="2" fill="white"></circle>
+                                            <circle cx="120" cy="50" r="2" fill="white"></circle>
+                                            <circle cx="90" cy="30" r="10" fill="white" fill-opacity="0.5"></circle>
+                                            <circle cx="90" cy="30" r="8" fill="white"></circle>
+                                            <path d="M0 128 Q32 64 64 128 T128 128" fill="purple" stroke="black" stroke-width="1"></path>
+                                            <path d="M0 128 Q32 48 64 128 T128 128" fill="mediumpurple" stroke="black" stroke-width="1"></path>
+                                            <path d="M0 128 Q32 32 64 128 T128 128" fill="rebeccapurple" stroke="black" stroke-width="1"></path>
+                                            <path d="M0 128 Q16 64 32 128 T64 128" fill="purple" stroke="black" stroke-width="1"></path>
+                                            <path d="M64 128 Q80 64 96 128 T128 128" fill="mediumpurple" stroke="black" stroke-width="1"></path>
+                                        </svg>
+                                        <div class="small-disc-inner"></div>
+                                    </div>
+                                    <div class="track-info">
+                                        <p class="track-name" id="trackName">Luna Spa Theme</p>
+                                        <p class="track-artist" id="trackArtist">Relax & Harmony</p>
+                                    </div>
+                                </div>
+
+                                <!-- Прогресс бар -->
+                                <div class="progress-container">
+                                    <span class="time-start" id="timeStart">0:00</span>
+                                    <input type="range" min="0" max="100" value="0" class="progress-bar" id="progressBar" />
+                                    <span class="time-end" id="timeEnd">0:00</span>
+                                </div>
+
+                                <!-- Элементы управления -->
+                                <div class="controls">
+                                    <!-- Режим воспроизведения -->
+                                    <label class="control-btn play-mode" for="playMode">
+                                        <input type="checkbox" id="playMode" />
+                                        <svg class="svg-icon icon-gray repeat-icon" width="20" height="20" viewBox="0 0 24 24">
+                                            <polyline points="17 1 21 5 17 9"></polyline>
+                                            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                                            <polyline points="7 23 3 19 7 15"></polyline>
+                                            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                                        </svg>
+                                        <svg class="svg-icon icon-gray shuffle-icon" width="20" height="20" viewBox="0 0 24 24">
+                                            <polyline points="16 3 21 3 21 8"></polyline>
+                                            <line x1="4" y1="20" x2="21" y2="3"></line>
+                                            <polyline points="21 16 21 21 16 21"></polyline>
+                                            <line x1="15" y1="15" x2="21" y2="21"></line>
+                                            <line x1="4" y1="4" x2="9" y2="9"></line>
+                                        </svg>
+                                    </label>
+
+                                    <!-- Назад -->
+                                    <div class="control-btn prev-btn" id="prevBtn">
+                                        <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24">
+                                            <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                                            <line x1="5" y1="19" x2="5" y2="5"></line>
+                                        </svg>
+                                    </div>
+
+                                    <!-- Воспроизведение/Пауза -->
+                                    <label class="control-btn play-status" for="playStatus">
+                                        <input type="checkbox" id="playStatus" />
+                                        <svg class="svg-icon play-icon" width="24" height="24" viewBox="0 0 24 24">
+                                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                        </svg>
+                                        <svg class="svg-icon pause-icon" width="24" height="24" viewBox="0 0 24 24">
+                                            <rect x="6" y="4" width="4" height="16"></rect>
+                                            <rect x="14" y="4" width="4" height="16"></rect>
+                                        </svg>
+                                    </label>
+
+                                    <!-- Вперед -->
+                                    <div class="control-btn next-btn" id="nextBtn">
+                                        <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24">
+                                            <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                                            <line x1="19" y1="5" x2="19" y2="19"></line>
+                                        </svg>
+                                    </div>
+
+                                    <!-- Список -->
+                                    <div class="control-btn list-btn" id="listBtn">
+                                        <svg class="svg-icon icon-gray" width="20" height="20" viewBox="0 0 24 24">
+                                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Вставляем плеер в контейнер
+                musicPlayerContainer.innerHTML = musicPlayerHTML;
+
+                // Инициализируем аудиоплеер
+                initializeAudioPlayer();
+            }
+
+            // Инициализация аудиоплеера
+            function initializeAudioPlayer() {
+                // Создаем аудио элемент
+                audioPlayer = new Audio();
+                currentTrackIndex = 0;
+                isPlaying = false;
+                isShuffle = false;
+                isRepeat = false;
+                updateInterval = null;
+                userInteracted = true; // Уже взаимодействовали - плеер виден
+
+                // Обновляем информацию о треке
+                function updateTrackInfo() {
+                    const track = musicTracks[currentTrackIndex];
+                    document.getElementById("trackName").textContent =
+                        track.title;
+                    document.getElementById("trackArtist").textContent =
+                        track.artist;
+                    document.getElementById("timeEnd").textContent =
+                        track.duration;
+
+                    // Обновляем источник аудио
+                    audioPlayer.src = track.src;
+
+                    // Сбрасываем прогресс
+                    document.getElementById("progressBar").value = 0;
+                    document.getElementById("timeStart").textContent = "0:00";
+                }
+
+                // Форматирование времени
+                function formatTime(seconds) {
+                    if (isNaN(seconds)) return "0:00";
+                    const mins = Math.floor(seconds / 60);
+                    const secs = Math.floor(seconds % 60);
+                    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+                }
+
+                // Обновление прогресса
+                function updateProgress() {
+                    if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
+                        const progress =
+                            (audioPlayer.currentTime / audioPlayer.duration) *
+                            100;
+                        document.getElementById("progressBar").value = progress;
+                        document.getElementById("timeStart").textContent =
+                            formatTime(audioPlayer.currentTime);
+                    }
+                }
+
+                // Воспроизведение/пауза
+                document
+                    .getElementById("playStatus")
+                    .addEventListener("change", function () {
+                        if (this.checked) {
+                            // Пауза
+                            audioPlayer.pause();
+                            isPlaying = false;
+                            document
+                                .querySelector(".disc")
+                                .classList.remove("playing");
+                            document
+                                .querySelector(".small-disc")
+                                .classList.remove("playing");
+                            clearInterval(updateInterval);
+                        } else {
+                            // Воспроизведение
+                            audioPlayer
+                                .play()
+                                .then(() => {
+                                    isPlaying = true;
+                                    document
+                                        .querySelector(".disc")
+                                        .classList.add("playing");
+                                    document
+                                        .querySelector(".small-disc")
+                                        .classList.add("playing");
+
+                                    // Запускаем обновление прогресса
+                                    clearInterval(updateInterval);
+                                    updateInterval = setInterval(
+                                        updateProgress,
+                                        500,
+                                    );
+                                })
+                                .catch((error) => {
+                                    console.error(
+                                        "Error playing audio:",
+                                        error,
+                                    );
+                                });
+                        }
+                    });
+
+                // Когда трек загружен
+                audioPlayer.addEventListener("loadedmetadata", function () {
+                    document.getElementById("timeEnd").textContent = formatTime(
+                        audioPlayer.duration,
+                    );
+                });
+
+                // Прогресс бар
+                document
+                    .getElementById("progressBar")
+                    .addEventListener("input", function () {
+                        if (
+                            audioPlayer.duration &&
+                            !isNaN(audioPlayer.duration)
+                        ) {
+                            const seekTime =
+                                (this.value / 100) * audioPlayer.duration;
+                            audioPlayer.currentTime = seekTime;
+                        }
+                    });
+
+                // Кнопка "Назад"
+                document
+                    .getElementById("prevBtn")
+                    .addEventListener("click", function () {
+                        currentTrackIndex =
+                            (currentTrackIndex - 1 + musicTracks.length) %
+                            musicTracks.length;
+                        updateTrackInfo();
+                        if (isPlaying) {
+                            audioPlayer.play();
+                        }
+                    });
+
+                // Кнопка "Вперед"
+                document
+                    .getElementById("nextBtn")
+                    .addEventListener("click", function () {
+                        if (isShuffle) {
+                            let newIndex;
+                            do {
+                                newIndex = Math.floor(
+                                    Math.random() * musicTracks.length,
+                                );
+                            } while (
+                                newIndex === currentTrackIndex &&
+                                musicTracks.length > 1
+                            );
+                            currentTrackIndex = newIndex;
+                        } else {
+                            currentTrackIndex =
+                                (currentTrackIndex + 1) % musicTracks.length;
+                        }
+                        updateTrackInfo();
+                        if (isPlaying) {
+                            audioPlayer.play();
+                        }
+                    });
+
+                // Режим воспроизведения
+                document
+                    .getElementById("playMode")
+                    .addEventListener("change", function () {
+                        if (this.checked) {
+                            isShuffle = true;
+                            isRepeat = false;
+                        } else {
+                            isShuffle = false;
+                            isRepeat = true;
+                        }
+                    });
+
+                // Когда трек заканчивается
+                audioPlayer.addEventListener("ended", function () {
+                    if (isRepeat) {
+                        audioPlayer.currentTime = 0;
+                        audioPlayer.play();
+                    } else {
+                        document.getElementById("nextBtn").click();
+                    }
+                });
+
+                // Ошибка воспроизведения
+                audioPlayer.addEventListener("error", function (e) {
+                    console.error("Audio error:", e);
+
+                    // Пробуем следующий трек
+                    setTimeout(() => {
+                        document.getElementById("nextBtn").click();
+                    }, 1000);
+                });
+
+                // Кнопка списка
+                document
+                    .getElementById("listBtn")
+                    .addEventListener("click", function () {
+                        showPlaylist();
+                    });
+
+                // Инициализация первого трека
+                updateTrackInfo();
+
+                // Загружаем первый трек
+                audioPlayer.load();
+            }
+
+            // Показать плейлист
+            function showPlaylist() {
+                const playlistHTML = `
+                    <div class="playlist-overlay" id="playlistOverlay" style="
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0,0,0,0.8);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 2000;
+                    ">
+                        <div class="playlist-container" style="
+                            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.1) 100%);
+                            backdrop-filter: blur(10px);
+                            border-radius: 20px;
+                            padding: 30px;
+                            max-width: 500px;
+                            width: 90%;
+                            max-height: 80vh;
+                            overflow-y: auto;
+                            border: 1px solid rgba(255,255,255,0.2);
+                        ">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h3 style="color: white; margin: 0;">Плейлист</h3>
+                                <button id="closePlaylist" style="
+                                    background: none;
+                                    border: none;
+                                    color: white;
+                                    font-size: 24px;
+                                    cursor: pointer;
+                                ">×</button>
+                            </div>
+                            <div class="playlist-tracks" id="playlistTracks">
+                                ${musicTracks
+                                    .map(
+                                        (track, index) => `
+                                    <div class="playlist-track" data-index="${index}" style="
+                                        display: flex;
+                                        align-items: center;
+                                        padding: 15px;
+                                        margin-bottom: 10px;
+                                        background: ${index === currentTrackIndex ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.1)"};
+                                        border-radius: 10px;
+                                        cursor: pointer;
+                                        transition: all 0.3s ease;
+                                        border: 1px solid ${index === currentTrackIndex ? "rgba(255,255,255,0.3)" : "transparent"};
+                                    ">
+                                        <div style="margin-right: 15px; color: rgba(255,255,255,0.7);">${index + 1}</div>
+                                        <div style="flex-grow: 1;">
+                                            <div style="color: white; font-weight: bold;">${track.title}</div>
+                                            <div style="color: rgba(255,255,255,0.7); font-size: 14px;">${track.artist}</div>
+                                        </div>
+                                        <div style="color: rgba(255,255,255,0.7);">${track.duration}</div>
+                                        ${index === currentTrackIndex ? '<div style="margin-left: 10px; color: #ffed4e;">▶</div>' : ""}
+                                    </div>
+                                `,
+                                    )
+                                    .join("")}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Вставляем плейлист
+                const overlay = document.createElement("div");
+                overlay.innerHTML = playlistHTML;
+                document.body.appendChild(overlay);
+
+                // Закрытие плейлиста
+                document
+                    .getElementById("closePlaylist")
+                    .addEventListener("click", function () {
+                        overlay.remove();
+                    });
+
+                // Клик по треку
+                document
+                    .querySelectorAll(".playlist-track")
+                    .forEach((track) => {
+                        track.addEventListener("click", function () {
+                            const trackIndex = parseInt(
+                                this.getAttribute("data-index"),
+                            );
+                            currentTrackIndex = trackIndex;
+
+                            // Обновляем плеер
+                            if (audioPlayer) {
+                                const track = musicTracks[currentTrackIndex];
+                                document.getElementById(
+                                    "trackName",
+                                ).textContent = track.title;
+                                document.getElementById(
+                                    "trackArtist",
+                                ).textContent = track.artist;
+                                audioPlayer.src = track.src;
+
+                                if (isPlaying) {
+                                    audioPlayer.play();
+                                }
+                            }
+
+                            overlay.remove();
+                        });
+                    });
+
+                // Закрытие по клику вне плейлиста
+                document
+                    .getElementById("playlistOverlay")
+                    .addEventListener("click", function (e) {
+                        if (e.target === this) {
+                            overlay.remove();
+                        }
+                    });
+            }
+
+            // Функция показа погоды
+            function showWeather() {
+                // Показываем контейнер с анимацией
+                weatherContainer.classList.add("show");
+
+                // Показываем сообщение о загрузке
+                weatherContainer.innerHTML = `
+                    <div class="weather-card">
+                        <div class="loading">Загрузка погоды...</div>
+                    </div>
+                `;
+
+                // Загружаем данные о погоде
+                loadWeatherData();
+            }
+
+            // Функция загрузки данных о погоде
+            async function loadWeatherData() {
+                try {
+                    const response = await fetch(
+                        `https://ru.wttr.in/penza?format=j1`,
+                    );
+                    const data = await response.json();
+
+                    // Извлекаем данные
+                    const current = data.current_condition[0];
+                    const temp = current.temp_C;
+                    const description = current.lang_ru[0].value;
+                    const humidity = current.humidity;
+                    const windSpeed = (current.windspeedKmph / 3.6).toFixed(1);
+                    const pressure = current.pressure;
+                    const feelsLike = current.FeelsLikeC;
+
+                    // Определяем иконку
+                    const weatherIcon = getWeatherIcon(description);
+
+                    // Формируем HTML для погоды
+                    const weatherHTML = `
+                        <div class="weather-card">
+                            <div class="location">
+                                <span>📍</span>
+                                <span>Пенза</span>
+                            </div>
+
+                            <div class="weather-main">
+                                <div class="temperature">
+                                    ${temp}<span class="unit">°C</span>
+                                </div>
+                                ${weatherIcon}
+                            </div>
+
+                            <div class="description">
+                                ${description}
+                            </div>
+
+                            <div class="details">
+                                <div class="detail-row">
+                                    <span class="detail-label">Ощущается как:</span>
+                                    <span class="detail-value">${feelsLike}°C</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Влажность:</span>
+                                    <span class="detail-value">${humidity}%</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Ветер:</span>
+                                    <span class="detail-value">${windSpeed} м/с</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Давление:</span>
+                                    <span class="detail-value">${pressure} мм</span>
+                                </div>
+                            </div>
+
+                            <div class="source">
+                                Данные: wttr.in
+                            </div>
+                        </div>
+                    `;
+
+                    // Вставляем погоду в контейнер
+                    weatherContainer.innerHTML = weatherHTML;
+                } catch (error) {
+                    console.error("Ошибка загрузки погоды:", error);
+                    weatherContainer.innerHTML = `
+                        <div class="weather-card">
+                            <div class="error">
+                                Не удалось загрузить погоду
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            // Оригинальный код страницы 404
+            function createStars() {
+                const starsContainer = document.getElementById("stars");
+
+                for (let i = 0; i < 100; i++) {
+                    const star = document.createElement("div");
+                    star.className = "star";
+
+                    const size = Math.random() * 3 + 1;
+                    const left = Math.random() * 100;
+                    const top = Math.random() * 100;
+                    const delay = Math.random() * 3;
+                    const duration = Math.random() * 3 + 2;
+
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.left = `${left}%`;
+                    star.style.top = `${top}%`;
+                    star.style.animationDelay = `${delay}s`;
+                    star.style.animationDuration = `${duration}s`;
+
+                    starsContainer.appendChild(star);
+                }
+            }
+
+            function createFloatingElements() {
+                const container = document.getElementById("floatingElements");
+                const elements = ["●", "◆", "▲", "✦", "■", "♦"];
+
+                for (let i = 0; i < 20; i++) {
+                    const element = document.createElement("div");
+                    element.className = "floating-element";
+                    element.textContent =
+                        elements[Math.floor(Math.random() * elements.length)];
+
+                    const size = Math.random() * 15 + 8;
+                    const left = Math.random() * 100;
+                    const delay = Math.random() * 15;
+                    const duration = Math.random() * 20 + 10;
+                    const opacity = Math.random() * 0.2 + 0.05;
+
+                    element.style.width = `${size}px`;
+                    element.style.height = `${size}px`;
+                    element.style.left = `${left}%`;
+                    element.style.top = `${100 + Math.random() * 20}%`;
+                    element.style.animationDelay = `${delay}s`;
+                    element.style.animationDuration = `${duration}s`;
+                    element.style.opacity = opacity;
+                    element.style.fontSize = `${size}px`;
+                    element.style.color = `rgba(255, 255, 255, ${opacity})`;
+
+                    container.appendChild(element);
+                }
+            }
+
+            class UFOSystem {
+                constructor() {
+                    this.container = document.createElement("div");
+                    this.container.className = "ufo-system";
+                    document.body.appendChild(this.container);
+
+                    this.trailContainer = document.createElement("div");
+                    this.trailContainer.className = "trail-container";
+                    this.container.appendChild(this.trailContainer);
+
+                    this.ufo = null;
+                    this.isFlying = false;
+                    this.hasStarted = false;
+                }
+
+                createUFO() {
+                    if (this.isFlying) return;
+
+                    this.ufo = document.createElement("div");
+                    this.ufo.className = "ufo";
+                    this.ufo.innerHTML = "➤";
+                    this.ufo.style.fontSize = "24px";
+                    this.container.appendChild(this.ufo);
+
+                    this.flyUFO();
+                }
+
+                flyUFO() {
+                    this.isFlying = true;
+                    const startY = 85;
+                    let startTime = Date.now();
+                    const duration = 4000;
+
+                    const animate = () => {
+                        const currentTime = Date.now();
+                        const progress = (currentTime - startTime) / duration;
+
+                        if (progress < 0.1) {
+                            this.ufo.style.opacity = (
+                                progress / 0.1
+                            ).toString();
+                        } else if (progress > 0.9) {
+                            this.ufo.style.opacity = (
+                                (1 - progress) /
+                                0.1
+                            ).toString();
+                        } else {
+                            this.ufo.style.opacity = "1";
+                        }
+
+                        if (progress > 1) {
+                            this.ufo.remove();
+                            this.isFlying = false;
+                            return;
+                        }
+
+                        const baseX = -30 + progress * (window.innerWidth + 60);
+                        const shakeX = Math.sin(progress * 50) * 1.5;
+                        const shakeY = Math.sin(progress * 45) * 1;
+                        const x = baseX + shakeX;
+                        const y = startY + shakeY;
+
+                        this.ufo.style.left = `${x}px`;
+                        this.ufo.style.top = `${y}px`;
+
+                        this.createTrailParticles(x, y);
+
+                        requestAnimationFrame(animate);
+                    };
+
+                    animate();
+                }
+
+                createTrailParticles(ufoX, ufoY) {
+                    const trailX = ufoX - 20;
+                    const trailY = ufoY + 12;
+
+                    if (Math.random() > 0.4) {
+                        this.createParticle(
+                            trailX,
+                            trailY,
+                            "cube",
+                            "■",
+                            -(Math.random() * 40 + 20),
+                            (Math.random() - 0.5) * 15,
+                        );
+                    }
+
+                    if (Math.random() > 0.6) {
+                        this.createParticle(
+                            trailX,
+                            trailY,
+                            "beam",
+                            "",
+                            -(Math.random() * 60 + 30),
+                            (Math.random() - 0.5) * 20,
+                        );
+                    }
+                }
+
+                createParticle(x, y, type, content, moveX, moveY) {
+                    const particle = document.createElement("div");
+                    particle.className = `particle ${type}`;
+
+                    if (type === "cube") {
+                        particle.textContent = content;
+                        particle.style.fontSize = `${Math.random() * 6 + 4}px`;
+                        particle.style.color = "#ffffff";
+                    }
+
+                    particle.style.left = `${x}px`;
+                    particle.style.top = `${y}px`;
+                    particle.style.setProperty("--move-x", `${moveX}px`);
+                    particle.style.setProperty("--move-y", `${moveY}px`);
+
+                    this.trailContainer.appendChild(particle);
+
+                    setTimeout(() => {
+                        if (particle.parentNode) {
+                            particle.parentNode.removeChild(particle);
+                        }
+                    }, 2000);
+                }
+
+                start() {
+                    setTimeout(() => {
+                        this.createUFO();
+                        setInterval(() => {
+                            this.createUFO();
+                        }, 60000);
+                    }, 60000);
+                }
+            }
+
+            // Запуск всего при загрузке страницы
+            document.addEventListener("DOMContentLoaded", function () {
+                createStars();
+                createFloatingElements();
+
+                const ufoSystem = new UFOSystem();
+                ufoSystem.start();
+
+                // Запускаем невидимые таймеры:
+                // 1. Музыкальный плеер - через 3 минуты
+                startMusicPlayerTimer();
+                // 2. Погода - через 2 минуты
+                startWeatherTimer();
+            });
+        </script>
+    </body>
+</html>

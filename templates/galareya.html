@@ -1,0 +1,427 @@
+{% extends "base.html" %} {% block title %}Галерея Luna | Космическое искусство
+и фотография{% endblock %} {% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Галерея космического искусства</h1>
+        <p class="hero-subtitle">
+            Коллекция космической фотографии, астрономических снимков и небесных
+            пейзажей
+        </p>
+    </div>
+</section>
+
+<section class="section gallery-section" id="gallery">
+    <div class="gallery-container">
+        {% for image in images %}
+        <div class="gallery-item">
+            <div class="image-card">
+                <!-- Добавлен обработчик клика для открытия изображения -->
+                <img
+                    src="{{ url_for('static', filename='galery/' + image.filename) }}"
+                    alt="{{ image.title }}"
+                    class="gallery-image"
+                    loading="lazy"
+                    onclick="openFullscreen('{{ url_for('static', filename='galery/' + image.filename) }}', '{{ image.title }}', '{{ image.author if image.author else '' }}', '{{ image.date if image.date else '' }}')"
+                />
+                <!-- Убрана анимация появления, но оставлена структура для стилизации -->
+                <div class="image-info" style="display: none">
+                    <h3 class="image-title">{{ image.title }}</h3>
+                    {% if image.author %}
+                    <p class="image-author">{{ image.author }}</p>
+                    {% endif %} {% if image.date %}
+                    <p class="image-date">{{ image.date }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Модальное окно для полноэкранного просмотра -->
+<div id="fullscreen-modal" class="fullscreen-modal">
+    <span class="close-modal" onclick="closeFullscreen()">&times;</span>
+    <div class="modal-content">
+        <img id="fullscreen-image" class="fullscreen-image" />
+        <div class="fullscreen-info">
+            <h3 id="fullscreen-title"></h3>
+            <p id="fullscreen-author"></p>
+            <p id="fullscreen-date"></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hero {
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 60px 20px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .hero-content {
+        max-width: 800px;
+    }
+
+    .hero-title {
+        font-size: 48px;
+        font-weight: 700;
+        color: white;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        margin-bottom: 20px;
+        line-height: 1.2;
+        margin-top: 120px;
+    }
+
+    .hero-subtitle {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.6;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Стили для галереи */
+    .gallery-section {
+        padding: 40px 20px;
+        background: transparent;
+        min-height: 70vh;
+    }
+
+    .gallery-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .gallery-item {
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 280px;
+        background: transparent;
+        cursor: pointer; /* Добавлен курсор указателя */
+    }
+
+    .gallery-item:hover {
+        transform: translateY(-5px);
+        box-shadow:
+            0 15px 35px rgba(0, 0, 0, 0.7),
+            0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .image-card {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        overflow: hidden;
+        background: transparent;
+    }
+
+    .gallery-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+        display: block;
+        cursor: pointer; /* Добавлен курсор указателя */
+    }
+
+    .gallery-item:hover .gallery-image {
+        transform: scale(1.05);
+    }
+
+    /* Скрываем информацию при наведении */
+    .image-info {
+        display: none; /* Полностью скрываем информацию */
+    }
+
+    /* Анимация появления карточек */
+    .gallery-item {
+        opacity: 0;
+        animation: fadeInUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Задержки для анимации каждой карточки */
+    .gallery-item:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+    .gallery-item:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    .gallery-item:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+    .gallery-item:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+    .gallery-item:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+    .gallery-item:nth-child(6) {
+        animation-delay: 0.6s;
+    }
+    .gallery-item:nth-child(7) {
+        animation-delay: 0.7s;
+    }
+    .gallery-item:nth-child(8) {
+        animation-delay: 0.8s;
+    }
+    .gallery-item:nth-child(9) {
+        animation-delay: 0.9s;
+    }
+
+    /* Стили для модального окна */
+    .fullscreen-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.95);
+        overflow: auto;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 25px;
+        right: 35px;
+        color: #fff;
+        font-size: 60px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 1001;
+        transition: color 0.3s;
+    }
+
+    .close-modal:hover {
+        color: #aaa;
+    }
+
+    .modal-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+        padding: 40px;
+        box-sizing: border-box;
+    }
+
+    .fullscreen-image {
+        max-width: 90%;
+        max-height: 80vh;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+    }
+
+    .fullscreen-info {
+        margin-top: 30px;
+        text-align: center;
+        color: white;
+        max-width: 800px;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+    }
+
+    .fullscreen-info h3 {
+        font-size: 28px;
+        margin-bottom: 10px;
+        color: white;
+    }
+
+    .fullscreen-info p {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 5px 0;
+    }
+
+    /* Адаптивность для модального окна */
+    @media (max-width: 768px) {
+        .close-modal {
+            top: 15px;
+            right: 25px;
+            font-size: 40px;
+        }
+
+        .fullscreen-image {
+            max-width: 95%;
+            max-height: 70vh;
+        }
+
+        .fullscreen-info {
+            margin-top: 20px;
+            padding: 15px;
+        }
+
+        .fullscreen-info h3 {
+            font-size: 22px;
+        }
+
+        .fullscreen-info p {
+            font-size: 16px;
+        }
+    }
+
+    @media (max-width: 1200px) {
+        .gallery-container {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero {
+            min-height: 50vh;
+            padding: 40px 20px;
+        }
+
+        .hero-title {
+            font-size: 36px;
+            margin-top: 150px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+        }
+
+        .gallery-section {
+            padding: 30px 15px;
+        }
+
+        .gallery-container {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .gallery-item {
+            height: 250px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero {
+            min-height: 70vh;
+            padding: 40px 20px;
+        }
+
+        .hero-title {
+            font-size: 28px;
+            margin-top: 180px;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .gallery-container {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .gallery-item {
+            height: 260px;
+        }
+    }
+
+    @media (min-width: 1600px) {
+        .gallery-container {
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        }
+        .gallery-item {
+            height: 320px;
+        }
+    }
+</style>
+
+<script>
+    function openFullscreen(imageSrc, title, author, date) {
+        const modal = document.getElementById("fullscreen-modal");
+        const modalImg = document.getElementById("fullscreen-image");
+        const modalTitle = document.getElementById("fullscreen-title");
+        const modalAuthor = document.getElementById("fullscreen-author");
+        const modalDate = document.getElementById("fullscreen-date");
+
+        modal.style.display = "block";
+        modalImg.src = imageSrc;
+        modalTitle.textContent = title;
+
+        // Показываем автора только если он есть
+        if (author && author.trim() !== "") {
+            modalAuthor.textContent = "Автор: " + author;
+            modalAuthor.style.display = "block";
+        } else {
+            modalAuthor.style.display = "none";
+        }
+
+        // Показываем дату только если она есть
+        if (date && date.trim() !== "") {
+            modalDate.textContent = "Дата: " + date;
+            modalDate.style.display = "block";
+        } else {
+            modalDate.style.display = "none";
+        }
+
+        // Блокируем скролл страницы
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeFullscreen() {
+        const modal = document.getElementById("fullscreen-modal");
+        modal.style.display = "none";
+
+        // Разблокируем скролл страницы
+        document.body.style.overflow = "auto";
+    }
+
+    // Закрытие модального окна при клике вне изображения
+    document
+        .getElementById("fullscreen-modal")
+        .addEventListener("click", function (e) {
+            if (e.target === this) {
+                closeFullscreen();
+            }
+        });
+
+    // Закрытие модального окна клавишей ESC
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+            closeFullscreen();
+        }
+    });
+</script>
+{% endblock %}

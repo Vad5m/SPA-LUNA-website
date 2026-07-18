@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+
+{% block title %}СПА-салон Luna | Новости и акции{% endblock %}
+
+{% block content %}
+<div class="news-container">
+    <section class="news-hero">
+        <div class="news-title-container">
+            <h1 class="news-main-title">
+                <i class="fas fa-newspaper"></i>
+                Новости и акции
+            </h1>
+            <p class="news-subtitle">
+                Будьте в курсе последних событий, специальных предложений и обновлений в нашем СПА-салоне
+            </p>
+        </div>
+
+        <div class="moon-news">
+            <div class="moon-news-glow"></div>
+            <div class="moon-news-crater moon-crater-1"></div>
+            <div class="moon-news-crater moon-crater-2"></div>
+            <div class="moon-news-crater moon-crater-3"></div>
+        </div>
+    </section>
+
+    <main class="single-column-news">
+        <div class="posts-container" id="postsContainer">
+            {% if news_items %}
+                {% for post in news_items %}
+                <article class="post-card">
+                    <div class="text-content">
+                        <h2 class="post-title">{{ post.title }}</h2>
+                        <p class="post-text">{{ post.content }}</p>
+                        <div class="post-meta">
+                            <div class="post-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>{{ post.date }}</span>
+                            </div>
+                            </div>
+                    </div>
+                    <div class="media-container">
+                        <div class="media-content">
+                            {% if post.media_type == 'image' %}
+                                <img src="{{ post.media_url }}" alt="{{ post.title }}" class="post-image">
+                            {% elif post.media_type == 'video' %}
+                                <video controls class="post-video" poster="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&fit=crop">
+                                    <source src="{{ post.media_url }}" type="video/mp4">
+                                    Ваш браузер не поддерживает видео.
+                                </video>
+                            {% else %}
+                                <div class="media-placeholder">
+                                    <i class="fas fa-spa"></i>
+                                    <div>Изображение скоро появится</div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            {% else %}
+                <div class="no-news-message">
+                    <i class="fas fa-info-circle"></i>
+                    <h3>Новостей пока нет</h3>
+                    <p>Скоро мы опубликуем для вас интересные новости и акции!</p>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+
+<style>
+    .news-container {
+        min-height: 100vh;
+        padding-top: 120px;
+        padding-bottom: 80px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .news-hero {
+        text-align: center;
+        margin-bottom: 60px;
+        padding: 40px 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .news-title-container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .news-main-title {
+        font-size: 42px;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 20px;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 204, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        animation: pulse 3s infinite alternate;
+    }
+
+    .news-main-title i {
+        font-size: 36px;
+        color: #ffcc00;
+        text-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+    }
+
+    @keyframes pulse {
+        0% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 204, 0, 0.3); }
+        100% { text-shadow: 0 0 30px rgba(255, 255, 255, 0.7), 0 0 60px rgba(255, 204, 0, 0.5); }
+    }
+
+    .news-subtitle {
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.9);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .moon-news {
+        position: absolute;
+        top: 50%;
+        right: 10%;
+        transform: translateY(-50%);
+        width: 150px;
+        height: 150px;
+        background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+        border-radius: 50%;
+        box-shadow: 0 0 60px rgba(255, 204, 0, 0.8), inset -15px -15px 30px rgba(0, 0, 0, 0.3), inset 8px 8px 15px rgba(255, 255, 255, 0.6);
+        z-index: 1;
+        opacity: 0.7;
+        animation: float-news 8s ease-in-out infinite;
+    }
+
+    .moon-news-glow {
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        background: radial-gradient(circle, rgba(255, 204, 0, 0.2) 0%, transparent 70%);
+        border-radius: 50%;
+        top: -15px;
+        left: -15px;
+        animation: glow-pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes float-news {
+        0%, 100% { transform: translateY(-50%) translateX(0); }
+        50% { transform: translateY(-50%) translateX(10px); }
+    }
+
+    @keyframes glow-pulse {
+        0%, 100% { opacity: 0.5; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    .moon-news-crater {
+        position: absolute;
+        background: rgba(180, 160, 80, 0.7);
+        border-radius: 50%;
+    }
+
+    .moon-crater-1 { width: 25px; height: 25px; top: 30px; left: 40px; }
+    .moon-crater-2 { width: 20px; height: 20px; top: 60px; right: 30px; }
+    .moon-crater-3 { width: 18px; height: 18px; bottom: 40px; left: 50px; }
+
+    .single-column-news {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .posts-container {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .post-card {
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.7) 100%);
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .post-card:hover {
+        transform: translateY(-5px);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.12) 100%);
+    }
+
+    .text-content {
+        flex: 1;
+        padding: 40px;
+    }
+
+    .post-title {
+        color: white;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    .post-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+        border-radius: 2px;
+    }
+
+    .post-text {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 17px;
+        line-height: 1.7;
+        margin-bottom: 25px;
+    }
+
+    .post-meta {
+        display: flex;
+        justify-content: flex-start; /* Прижимает дату к левому краю */
+        align-items: center;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 14px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .post-date {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .post-date i {
+        color: #ffcc00; /* Та самая желтая иконка календаря */
+        text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+    }
+
+    .media-container {
+        width: 100%;
+        height: 400px;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .media-content {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 15px;
+        overflow: hidden;
+        border: 2px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .post-image, .post-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .no-news-message {
+        text-align: center;
+        padding: 60px 40px;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 768px) {
+        .news-main-title { font-size: 32px; }
+        .media-container { height: 300px; }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,1130 @@
+{% extends "base.html" %} {% block content %}
+<div class="reviews-page-container">
+    <div class="reviews-header-spacer"></div>
+
+    <h1 class="page-title">Отзывы (админ-панель)</h1>
+
+    <div class="reviews-content-wrapper">
+        <div class="reviews-container" id="reviewsList">
+            <div class="all-media-section">
+                <h2 class="all-media-title">Все медиа</h2>
+                <div class="carousel-container">
+                    <button class="carousel-btn prev">❮</button>
+                    <button class="carousel-btn next">❯</button>
+                    <div class="carousel-track" id="mediaCarouselTrack"></div>
+                </div>
+            </div>
+
+            <div class="review-comments-container" id="reviewsContainer"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .reviews-page-container {
+        min-height: 100vh;
+        width: 100%;
+        position: relative;
+    }
+
+    .reviews-header-spacer {
+        height: 80px;
+        width: 100%;
+    }
+
+    .reviews-content-wrapper {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: 2.5rem;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        margin-bottom: 40px;
+        padding-top: 20px;
+    }
+
+    .all-media-section {
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.15) 0%,
+            rgba(255, 255, 255, 0.08) 100%
+        );
+        border-radius: 20px;
+        padding: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .all-media-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent
+        );
+    }
+
+    .all-media-title {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 25px;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: center;
+        position: relative;
+    }
+
+    .all-media-title::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 2px;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.6),
+            transparent
+        );
+        border-radius: 1px;
+    }
+
+    .review-comment {
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.15) 0%,
+            rgba(255, 255, 255, 0.08) 100%
+        );
+        border-radius: 20px;
+        padding: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        margin-bottom: 25px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .review-comment::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent
+        );
+    }
+
+    .review-comment:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.18) 0%,
+            rgba(255, 255, 255, 0.1) 100%
+        );
+    }
+
+    .review-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .delete-review-btn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: rgba(255, 0, 0, 0.8);
+        border: none;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+
+    .delete-review-btn:hover {
+        background: rgba(255, 0, 0, 1);
+        transform: scale(1.1);
+    }
+
+    .review-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.25) 0%,
+            rgba(255, 255, 255, 0.15) 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .reviewer-info {
+        flex: 1;
+    }
+
+    .reviewer-name {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .review-date {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .review-media {
+        margin: 20px 0;
+    }
+
+    .review-media-carousel {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        border-radius: 12px;
+    }
+
+    .review-media-track {
+        display: flex;
+        transition: transform 0.5s ease;
+        gap: 10px;
+    }
+
+    .review-media-item {
+        flex: 0 0 120px;
+        height: 160px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background: #000;
+    }
+
+    .review-media-item:hover {
+        transform: scale(1.05);
+        border-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .review-media-item img,
+    .review-media-item video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .review-media-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.25) 0%,
+            rgba(255, 255, 255, 0.15) 100%
+        );
+        border: none;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .review-media-btn:hover {
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.35) 0%,
+            rgba(255, 255, 255, 0.25) 100%
+        );
+        transform: translateY(-50%) scale(1.1);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .review-media-prev {
+        left: 5px;
+    }
+
+    .review-media-next {
+        right: 5px;
+    }
+
+    .review-text {
+        font-size: 16px;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 400;
+        margin-top: 15px;
+    }
+
+    .carousel-container {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        padding: 25px 0;
+    }
+
+    .carousel-track {
+        display: flex;
+        transition: transform 0.5s ease;
+        gap: 15px;
+    }
+
+    .media-carousel-item {
+        flex: 0 0 180px;
+        height: 250px;
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.18) 0%,
+            rgba(255, 255, 255, 0.08) 100%
+        );
+        border-radius: 12px;
+        padding: 10px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .media-carousel-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent
+        );
+    }
+
+    .media-carousel-item:hover {
+        transform: translateY(-3px);
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.22) 0%,
+            rgba(255, 255, 255, 0.12) 100%
+        );
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .media-carousel-image {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+    }
+
+    .media-carousel-item:hover .media-carousel-image {
+        transform: scale(1.03);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .media-carousel-caption {
+        margin-top: 12px;
+        text-align: center;
+    }
+
+    .media-caption-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 3px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .media-caption-user {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .carousel-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.25) 0%,
+            rgba(255, 255, 255, 0.15) 100%
+        );
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .carousel-btn:hover {
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.35) 0%,
+            rgba(255, 255, 255, 0.25) 100%
+        );
+        transform: translateY(-50%) scale(1.1);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .carousel-btn.prev {
+        left: 5px;
+    }
+    .carousel-btn.next {
+        right: 5px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .empty-state i {
+        font-size: 48px;
+        margin-bottom: 15px;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .lazy-media {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .lazy-media.loaded {
+        opacity: 1;
+    }
+
+    .lazy-loading-placeholder {
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0.05) 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 14px;
+    }
+
+    @media (max-width: 767px) {
+        .reviews-header-spacer {
+            height: 100px;
+        }
+
+        .reviews-content-wrapper {
+            padding: 0 15px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            padding-top: 10px;
+        }
+
+        .all-media-section {
+            padding: 20px;
+        }
+
+        .media-carousel-item {
+            flex: 0 0 140px;
+            height: 200px;
+        }
+
+        .media-carousel-image {
+            height: 140px;
+        }
+
+        .review-media-item {
+            flex: 0 0 130px;
+            height: 180px;
+        }
+
+        .review-media-btn {
+            width: 30px;
+            height: 30px;
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .reviews-header-spacer {
+            height: 200px;
+        }
+
+        .reviews-content-wrapper {
+            padding: 0 10px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-top: 5px;
+        }
+
+        .all-media-section {
+            padding: 15px;
+        }
+
+        .review-comment {
+            padding: 20px 15px;
+        }
+
+        .media-carousel-item {
+            flex: 0 0 120px;
+            height: 180px;
+        }
+
+        .media-carousel-image {
+            height: 120px;
+        }
+
+        .review-media-item {
+            flex: 0 0 110px;
+            height: 160px;
+        }
+
+        .carousel-btn {
+            width: 35px;
+            height: 35px;
+            font-size: 16px;
+        }
+    }
+</style>
+
+<script>
+    let allReviews = [];
+    let lazyLoadObserver = null;
+
+    // Проверяем авторизацию админа при загрузке страницы
+    function checkAdminAuth() {
+        return fetch("/api/admin/check-auth")
+            .then((response) => {
+                if (response.status === 401 || !response.ok) {
+                    window.location.href = "/admin/login/";
+                    return Promise.reject("Not authenticated");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if (!data.authenticated) {
+                    window.location.href = "/admin/login/";
+                    return Promise.reject("Not authenticated");
+                }
+                return true;
+            });
+    }
+
+    function initLazyLoading() {
+        if ("IntersectionObserver" in window) {
+            lazyLoadObserver = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            const media = entry.target;
+                            if (media.dataset.src) {
+                                media.src = media.dataset.src;
+                                delete media.dataset.src;
+                            }
+                            if (media.dataset.srcset) {
+                                media.srcset = media.dataset.srcset;
+                                delete media.dataset.srcset;
+                            }
+                            media.classList.remove("lazy-media");
+                            media.classList.add("loaded");
+                            lazyLoadObserver.unobserve(media);
+                        }
+                    });
+                },
+                {
+                    rootMargin: "50px 0px",
+                    threshold: 0.1,
+                },
+            );
+        }
+    }
+
+    function lazyLoadMedia(mediaElement) {
+        if (lazyLoadObserver) {
+            mediaElement.classList.add("lazy-media");
+            lazyLoadObserver.observe(mediaElement);
+        } else {
+            mediaElement.classList.add("loaded");
+        }
+    }
+
+    function openMediaInNewTab(mediaUrl) {
+        window.open(mediaUrl, "_blank");
+    }
+
+    function loadReviews() {
+        fetch("/api/reviews")
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if (data.success) {
+                    allReviews = data.reviews;
+                    renderReviews();
+                }
+            })
+            .catch((error) => {
+                console.error("Error loading reviews:", error);
+            });
+    }
+
+    function loadAllFiles() {
+        fetch("/api/reviews/all-files")
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    renderMediaCarousel(data.files);
+                } else {
+                    loadAllMedia();
+                }
+            })
+            .catch((error) => {
+                loadAllMedia();
+            });
+    }
+
+    function loadAllMedia() {
+        fetch("/api/reviews/all-media")
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    renderMediaCarousel(data.media);
+                }
+            })
+            .catch((error) => {
+                console.error("Error loading media:", error);
+            });
+    }
+
+    function renderReviews() {
+        const reviewsContainer = document.getElementById("reviewsContainer");
+        if (!reviewsContainer) return;
+
+        reviewsContainer.innerHTML = "";
+
+        if (allReviews.length === 0) {
+            reviewsContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-comments"></i>
+                <h3>Пока нет отзывов</h3>
+            </div>
+        `;
+            return;
+        }
+
+        allReviews.forEach((review) => {
+            const reviewElement = createReviewElement(review);
+            reviewsContainer.appendChild(reviewElement);
+        });
+    }
+
+    function createReviewElement(review) {
+        const reviewDiv = document.createElement("div");
+        reviewDiv.className = "review-comment";
+
+        const reviewDate =
+            review.date_display ||
+            (review.timestamp
+                ? new Date(review.timestamp).toLocaleDateString("ru-RU", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                  })
+                : "Дата не указана");
+
+        let mediaHTML = "";
+
+        if (review.media_files && review.media_files.length > 0) {
+            mediaHTML = `
+            <div class="review-media">
+                <div class="review-media-carousel">
+                    <button class="review-media-btn review-media-prev">❮</button>
+                    <button class="review-media-btn review-media-next">❯</button>
+                    <div class="review-media-track">
+        `;
+
+            review.media_files.forEach((media, index) => {
+                if (media.url && media.url !== "undefined") {
+                    if (media.type === "image") {
+                        mediaHTML += `
+                        <div class="review-media-item" onclick="openMediaInNewTab('${media.url}')">
+                            <img data-src="${media.url}"
+                                 alt="Фото ${index + 1} от ${review.user_name}"
+                                 class="lazy-media"
+                                 onerror="this.style.display='none'" />
+                            <div class="lazy-loading-placeholder" style="width:100%;height:100%;">
+                                <i class="fas fa-image"></i>
+                            </div>
+                        </div>
+                    `;
+                    } else {
+                        mediaHTML += `
+                        <div class="review-media-item" onclick="openMediaInNewTab('${media.url}')">
+                            <video class="lazy-media"
+                                   data-src="${media.url}"
+                                   onerror="this.style.display='none'">
+                                Ваш браузер не поддерживает видео.
+                            </video>
+                            <div class="lazy-loading-placeholder" style="width:100%;height:100%;">
+                                <i class="fas fa-video"></i>
+                            </div>
+                        </div>
+                    `;
+                    }
+                }
+            });
+
+            mediaHTML += `
+                    </div>
+                </div>
+            </div>
+        `;
+        }
+
+        reviewDiv.innerHTML = `
+        <div class="review-header">
+            <button class="delete-review-btn" onclick="deleteReview(${review.id})">
+                ×
+            </button>
+            <div class="review-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="reviewer-info">
+                <div class="reviewer-name">${review.user_name || "Анонимный пользователь"}</div>
+                <div class="review-date">${reviewDate}</div>
+            </div>
+        </div>
+        ${mediaHTML}
+        <div class="review-text">${review.comment || ""}</div>
+    `;
+
+        if (review.media_files && review.media_files.length > 0) {
+            setTimeout(() => {
+                initReviewCarousel(reviewDiv);
+                initLazyLoadForReview(reviewDiv);
+            }, 100);
+        }
+
+        return reviewDiv;
+    }
+
+    function deleteReview(reviewId) {
+        if (confirm("Вы уверены, что хотите удалить этот отзыв?")) {
+            console.log(`Starting delete for review ID: ${reviewId}`);
+
+            fetch(`/api/admin/reviews/delete/${reviewId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((response) => {
+                    console.log(`Response status: ${response.status}`);
+
+                    if (response.status === 401) {
+                        // Если не авторизован - перенаправляем на логин
+                        alert(
+                            "❌ Вы не авторизованы. Перенаправление на страницу входа...",
+                        );
+                        window.location.href = "/admin/login/";
+                        return Promise.reject("Not authenticated");
+                    }
+
+                    if (!response.ok) {
+                        return response.text().then((text) => {
+                            console.log(`Response text: ${text}`);
+                            throw new Error(`HTTP error ${response.status}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log(`Response data:`, data);
+                    if (data.success) {
+                        alert("✅ Отзыв успешно удален");
+                        loadReviews();
+                        loadAllFiles();
+                    } else {
+                        alert(
+                            "❌ Ошибка при удалении отзыва: " +
+                                (data.error || "Неизвестная ошибка"),
+                        );
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error deleting review:", error);
+                    if (error.message !== "Not authenticated") {
+                        alert(
+                            "❌ Ошибка при удалении отзыва: " + error.message,
+                        );
+                    }
+                });
+        }
+    }
+
+    function initLazyLoadForReview(reviewElement) {
+        const mediaElements = reviewElement.querySelectorAll(".lazy-media");
+        mediaElements.forEach((media) => lazyLoadMedia(media));
+    }
+
+    function initReviewCarousel(reviewElement) {
+        const carousel = reviewElement.querySelector(".review-media-carousel");
+        if (!carousel) return;
+
+        const track = carousel.querySelector(".review-media-track");
+        const items = track.querySelectorAll(".review-media-item");
+        const prevBtn = carousel.querySelector(".review-media-prev");
+        const nextBtn = carousel.querySelector(".review-media-next");
+
+        if (items.length === 0) return;
+
+        let currentIndex = 0;
+        const itemsPerView = getReviewItemsPerView();
+
+        function getReviewItemsPerView() {
+            const width = window.innerWidth;
+            if (width <= 480) return 2;
+            if (width <= 768) return 3;
+            if (width <= 1024) return 3;
+            return 4;
+        }
+
+        function updateCarousel() {
+            if (items.length === 0) return;
+
+            const itemWidth = items[0].offsetWidth;
+            const gap = 10;
+            const translateX = currentIndex * (itemWidth + gap);
+            track.style.transform = `translateX(-${translateX}px)`;
+        }
+
+        function nextSlide() {
+            const maxIndex = Math.max(0, items.length - itemsPerView);
+            if (currentIndex < maxIndex) {
+                currentIndex++;
+            } else {
+                currentIndex = 0;
+            }
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            const maxIndex = Math.max(0, items.length - itemsPerView);
+            if (currentIndex > 0) {
+                currentIndex--;
+            } else {
+                currentIndex = maxIndex;
+            }
+            updateCarousel();
+        }
+
+        if (nextBtn) nextBtn.addEventListener("click", nextSlide);
+        if (prevBtn) prevBtn.addEventListener("click", prevSlide);
+
+        setTimeout(() => {
+            updateCarousel();
+        }, 100);
+
+        let resizeTimeout;
+        window.addEventListener("resize", () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                currentIndex = 0;
+                setTimeout(() => {
+                    updateCarousel();
+                }, 50);
+            }, 100);
+        });
+    }
+
+    function renderMediaCarousel(files) {
+        const carouselTrack = document.getElementById("mediaCarouselTrack");
+        if (!carouselTrack) return;
+
+        carouselTrack.innerHTML = "";
+
+        if (files.length === 0) {
+            carouselTrack.innerHTML = `
+            <div class="empty-state" style="width: 100%; text-align: center; color: rgba(255,255,255,0.7); padding: 40px 20px;">
+                <i class="fas fa-images"></i>
+                <div style="margin-top: 10px;">Пока нет медиафайлов</div>
+            </div>
+        `;
+            return;
+        }
+
+        files.forEach((file) => {
+            const carouselItem = document.createElement("div");
+            carouselItem.className = "media-carousel-item";
+            carouselItem.onclick = () => openMediaInNewTab(file.url);
+
+            if (file.type === "image") {
+                carouselItem.innerHTML = `
+                <img data-src="${file.url}"
+                     alt="Фото из отзыва"
+                     class="media-carousel-image lazy-media"
+                     onerror="this.style.display='none'" />
+                <div class="lazy-loading-placeholder" style="width:100%;height:180px;border-radius:8px;">
+                    <i class="fas fa-image"></i>
+                </div>
+                <div class="media-carousel-caption">
+                    <div class="media-caption-title">Фото</div>
+                    <div class="media-caption-user">${formatFileSize(file.size)}</div>
+                </div>
+            `;
+            } else {
+                carouselItem.innerHTML = `
+                <video class="media-carousel-image lazy-media"
+                       style="object-fit:cover;"
+                       data-src="${file.url}"
+                       onerror="this.style.display='none'">
+                    <source src="${file.url}" type="video/mp4">
+                    Ваш браузер не поддерживает видео.
+                </video>
+                <div class="lazy-loading-placeholder" style="width:100%;height:180px;border-radius:8px;">
+                    <i class="fas fa-video"></i>
+                </div>
+                <div class="media-carousel-caption">
+                    <div class="media-caption-title">Видео</div>
+                    <div class="media-caption-user">${formatFileSize(file.size)}</div>
+                </div>
+            `;
+            }
+
+            carouselTrack.appendChild(carouselItem);
+        });
+
+        setTimeout(() => {
+            initMediaCarousel();
+            initLazyLoadForCarousel();
+        }, 100);
+    }
+
+    function initLazyLoadForCarousel() {
+        const carouselItems = document.querySelectorAll(
+            ".media-carousel-item .lazy-media",
+        );
+        carouselItems.forEach((media) => lazyLoadMedia(media));
+    }
+
+    function formatFileSize(bytes) {
+        if (!bytes || bytes === 0) return "";
+        const k = 1024;
+        const sizes = ["B", "KB", "MB", "GB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    }
+
+    function initMediaCarousel() {
+        const carousel = document.querySelector(
+            ".all-media-section .carousel-container",
+        );
+        if (!carousel) return;
+
+        const track = carousel.querySelector(".carousel-track");
+        const items = track.querySelectorAll(".media-carousel-item");
+        const prevBtn = carousel.querySelector(".carousel-btn.prev");
+        const nextBtn = carousel.querySelector(".carousel-btn.next");
+
+        if (items.length === 0) return;
+
+        let currentIndex = 0;
+        let itemsPerView = getMediaItemsPerView();
+        let autoScrollInterval;
+        let isHovered = false;
+        const isMobile = window.innerWidth <= 768;
+
+        function getMediaItemsPerView() {
+            const width = window.innerWidth;
+            if (width <= 480) return 2;
+            if (width <= 768) return 3;
+            if (width <= 1024) return 4;
+            if (width <= 1200) return 5;
+            return 6;
+        }
+
+        function updateCarousel() {
+            if (items.length === 0) return;
+
+            const containerWidth = carousel.offsetWidth;
+            const itemWidth = items[0].offsetWidth;
+            const gap = parseInt(window.getComputedStyle(track).gap) || 15;
+
+            const totalItemWidth = itemWidth + gap;
+            const translateX = currentIndex * totalItemWidth;
+
+            track.style.transform = `translateX(-${translateX}px)`;
+            track.style.transition = "transform 0.5s ease";
+        }
+
+        function nextSlide() {
+            const maxIndex = Math.max(0, items.length - itemsPerView);
+            if (currentIndex < maxIndex) {
+                currentIndex++;
+            } else {
+                currentIndex = 0;
+            }
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            const maxIndex = Math.max(0, items.length - itemsPerView);
+            if (currentIndex > 0) {
+                currentIndex--;
+            } else {
+                currentIndex = maxIndex;
+            }
+            updateCarousel();
+        }
+
+        function startAutoScroll() {
+            if (isMobile) return;
+            stopAutoScroll();
+            autoScrollInterval = setInterval(() => {
+                if (!isHovered) nextSlide();
+            }, 3000);
+        }
+
+        function stopAutoScroll() {
+            if (autoScrollInterval) {
+                clearInterval(autoScrollInterval);
+                autoScrollInterval = null;
+            }
+        }
+
+        if (nextBtn) nextBtn.addEventListener("click", nextSlide);
+        if (prevBtn) prevBtn.addEventListener("click", prevSlide);
+
+        if (!isMobile) {
+            carousel.addEventListener("mouseenter", () => {
+                isHovered = true;
+                stopAutoScroll();
+            });
+            carousel.addEventListener("mouseleave", () => {
+                isHovered = false;
+                startAutoScroll();
+            });
+        }
+
+        setTimeout(() => {
+            updateCarousel();
+            startAutoScroll();
+        }, 100);
+
+        let resizeTimeout;
+        window.addEventListener("resize", () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                itemsPerView = getMediaItemsPerView();
+                currentIndex = 0;
+                setTimeout(() => {
+                    updateCarousel();
+                }, 50);
+                stopAutoScroll();
+                if (!isMobile) startAutoScroll();
+            }, 100);
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Проверяем авторизацию перед загрузкой контента
+        checkAdminAuth()
+            .then(() => {
+                initLazyLoading();
+                loadReviews();
+                loadAllFiles();
+            })
+            .catch((error) => {
+                console.error("Admin auth failed:", error);
+                // Уже перенаправлено на /admin/login/
+            });
+    });
+</script>
+
+{% endblock %}

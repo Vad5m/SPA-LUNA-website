@@ -1,0 +1,812 @@
+{% extends "base.html" %} {% block title %}СПА-салон Luna - Услуги{% endblock %}
+{% block content %}
+<div class="services-header">
+    <h1 class="carousel-title">Наши услуги</h1>
+</div>
+
+<div class="services-container">
+    <div class="service-category">
+        <div class="service-item">
+            <div class="service-image-container">
+                <img
+                    src="/static/photo_2026-02-24_20-05-49.jpg"
+                    alt="Кедровая бочка"
+                    class="service-image"
+                />
+            </div>
+            <div class="service-details">
+                <div class="service-name">Кедровая бочка</div>
+                <div class="service-duration">30 мин</div>
+                <div class="service-price">750Р</div>
+                <button class="booking-button" onclick="showPhoneModal()">
+                    Записаться
+                </button>
+            </div>
+        </div>
+        <div class="service-item">
+            <div class="service-image-container">
+                <video
+                    src="/static/doc_2026-02-24_20-14-09.mp4"
+                    class="service-image service-video"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    onerror="
+                        this.style.display = 'none';
+                        this.nextElementSibling.style.display = 'flex';
+                    "
+                ></video>
+                <div class="video-fallback" style="display: none">
+                    Видео не загрузилось
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-name">Массаж ручной лица</div>
+                <div class="service-duration">30 мин</div>
+                <div class="service-price">1500Р</div>
+                <button class="booking-button" onclick="showPhoneModal()">
+                    Записаться
+                </button>
+            </div>
+        </div>
+        <div class="service-item">
+            <div class="service-image-container">
+                <video
+                    src="/static/doc_2026-02-24_20-06-43.mp4"
+                    class="service-image service-video"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    onerror="
+                        this.style.display = 'none';
+                        this.nextElementSibling.style.display = 'flex';
+                    "
+                ></video>
+                <div class="video-fallback" style="display: none">
+                    Видео не загрузилось
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-name">Массаж ручной тела</div>
+                <div class="service-variants">
+                    <div class="service-variant">
+                        <div class="variant-space"></div>
+                        <div class="variant-duration">30 мин</div>
+                        <div class="variant-price">1500Р</div>
+                        <div class="variant-duration">30 мин</div>
+                        <div class="variant-price">1800Р</div>
+                    </div>
+                    <div class="service-variant">
+                        <div class="variant-space"></div>
+                        <div class="variant-duration">40 мин</div>
+                        <div class="variant-price">2000Р</div>
+                        <div class="variant-duration">40 мин</div>
+                        <div class="variant-price">2400Р</div>
+                    </div>
+                    <div class="service-variant">
+                        <div class="variant-space"></div>
+                        <div class="variant-duration">60 мин</div>
+                        <div class="variant-price">3000Р</div>
+                        <div class="variant-duration">60 мин</div>
+                        <div class="variant-price">3600Р</div>
+                    </div>
+                    <div class="service-variant">
+                        <div class="variant-space"></div>
+                        <div class="variant-duration">90 мин</div>
+                        <div class="variant-price">4500Р</div>
+                        <div class="variant-duration">90 мин</div>
+                        <div class="variant-price">5400Р</div>
+                    </div>
+                </div>
+                <button class="booking-button" onclick="showPhoneModal()">
+                    Записаться
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="service-category">
+        <div class="service-item">
+            <div class="service-image-container">
+                <video
+                    src="/static/doc_2026-02-24_19-05-28.mp4"
+                    class="service-image service-video"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    onerror="
+                        this.style.display = 'none';
+                        this.nextElementSibling.style.display = 'flex';
+                    "
+                ></video>
+                <div class="video-fallback" style="display: none">
+                    Видео не загрузилось
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-name">Скрабирующий массаж</div>
+                <div class="service-duration">60 мин</div>
+                <div class="service-price">3750Р</div>
+                <button class="booking-button" onclick="showPhoneModal()">
+                    Записаться
+                </button>
+            </div>
+        </div>
+        <div class="service-item">
+            <div class="service-image-container">
+                <video
+                    src="/static/doc_2026-02-24_20-26-59.mp4"
+                    class="service-image service-video"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    onerror="
+                        this.style.display = 'none';
+                        this.nextElementSibling.style.display = 'flex';
+                    "
+                ></video>
+                <div class="video-fallback" style="display: none">
+                    Видео не загрузилось
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-name">Релакс массаж в 4 руки</div>
+                <div class="service-duration">60 мин</div>
+                <div class="service-price">6000Р</div>
+                <button class="booking-button" onclick="showPhoneModal()">
+                    Записаться
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="service-category">
+        <div class="category-title">Уходы по телу</div>
+        {% set body_care_services = [ ('Уход по телу «Таинственный Тайланд»',
+        '90 мин', '5000Р', 'thailand.jpg'), ('Уход по телу «Папайя»', '90 мин',
+        '5000Р', 'papaya.jpg'), ('Уход по телу похудение с «Морскими
+        водорослями»', '90 мин', '5000Р', 'seaweed.jpg'), ('Уход по телу «Пина
+        колада»', '90 мин', '5000Р', 'pina-colada.jpg'), ('Уход по телу «Райский
+        остров»', '90 мин', '5000Р', 'paradise-island.jpg'), ('Уход по телу
+        «Тропическое наслаждение»', '90 мин', '5000Р', 'tropical.jpg'), ('Уход
+        по телу «Антицеллюлит Цитрус»', '90 мин', '5000Р', 'citrus.jpg'), ('Уход
+        тело/лицо «Лотос»', '120 мин', '6500Р', 'lotus.jpg'), ('«Anti-age
+        Вино»', '90 мин', '5000Р', 'wine.jpg') ] %} {% for service in
+        body_care_services %}
+        <div class="service-item">
+            <div class="service-image-container">
+                <img
+                    src="/static/{{ service[3] }}"
+                    alt="{{ service[0] }}"
+                    class="service-image"
+                />
+            </div>
+            <div class="service-details">
+                <div class="service-name">{{ service[0] }}</div>
+                <div class="service-duration">{{ service[1] }}</div>
+                <div class="service-price">{{ service[2] }}</div>
+                <button class="booking-button" onclick="showPhoneModal()">
+                    Записаться
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="service-category">
+        <div class="category-title">Бандажные обертывания</div>
+        <div class="service-item">
+            <div class="service-image-container">
+                <video
+                    src="/static/doc_2026-02-24_20-36-56.mp4"
+                    class="service-image service-video"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    onerror="
+                        this.style.display = 'none';
+                        this.nextElementSibling.style.display = 'flex';
+                    "
+                ></video>
+                <div class="video-fallback" style="display: none">
+                    Видео не загрузилось
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-name">
+                    Бандажное обертывание антицеллюлитное (горячее)
+                </div>
+                <div class="service-duration">90 мин</div>
+                <div class="service-price">5000Р</div>
+                <button class="booking-button" onclick="showPhoneModal()">
+                    Записаться
+                </button>
+            </div>
+        </div>
+        <div class="service-item">
+            <div class="service-image-container">
+                <video
+                    src="/static/doc_2026-02-24_20-36-56.mp4"
+                    class="service-image service-video"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    onerror="
+                        this.style.display = 'none';
+                        this.nextElementSibling.style.display = 'flex';
+                    "
+                ></video>
+                <div class="video-fallback" style="display: none">
+                    Видео не загрузилось
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-name">
+                    Бандажное обертывание лимфодренажное (холодное)
+                </div>
+                <div class="service-duration">90 мин</div>
+                <div class="service-price">5000Р</div>
+                <button class="booking-button" onclick="showPhoneModal()">
+                    Записаться
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="service-category">
+        <div class="category-title">Аппаратный массаж VORTEX PRO LPG</div>
+        <div class="service-item">
+            <div class="service-image-container">
+                <video
+                    src="/static/doc_2026-02-24_20-56-37.mp4"
+                    class="service-image service-video"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    onerror="
+                        this.style.display = 'none';
+                        this.nextElementSibling.style.display = 'flex';
+                    "
+                ></video>
+                <div class="video-fallback" style="display: none">
+                    Видео не загрузилось
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-name">
+                    Массаж аппаратный VORTEX PRO LPG тело
+                </div>
+                <div class="service-duration">40 мин</div>
+                <div class="service-price">1700Р</div>
+                <button class="booking-button" onclick="showPhoneModal()">
+                    Записаться
+                </button>
+            </div>
+        </div>
+        <div class="service-item">
+            <div class="service-image-container">
+                <video
+                    src="/static/lv_0_20260402181105.mp4"
+                    class="service-image service-video"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    onerror="
+                        this.style.display = 'none';
+                        this.nextElementSibling.style.display = 'flex';
+                    "
+                ></video>
+                <div class="video-fallback" style="display: none">
+                    Видео не загрузилось
+                </div>
+            </div>
+            <div class="service-details">
+                <div class="service-name">
+                    Массаж аппаратный VORTEX PRO LPG лицо
+                </div>
+                <div class="service-duration">20 мин</div>
+                <div class="service-price">1000Р</div>
+                <button class="booking-button" onclick="showPhoneModal()">
+                    Записаться
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Подарочные сертификаты -->
+    <div class="service-category">
+        <div class="service-item">
+            <div class="service-image-container">
+                <img
+                    src="/static/photo_2026-02-24_20-55-19.jpg"
+                    alt="Подарочный сертификат"
+                    class="service-image"
+                />
+            </div>
+            <div class="service-details">
+                <div class="service-name">
+                    Универсальный подарок для любого человека, независимо от
+                    пола, возраста и интересов. Премиум и стандартные варианты
+                    можно выбрать на любой вкус самостоятельно, либо наш
+                    специалист подберет лучшее предложение, исходя из ваших
+                    пожеланий.
+                </div>
+                <div class="service-price">от 1000Р</div>
+                <button class="booking-button" onclick="showPhoneModal()">
+                    Записаться
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно -->
+<div id="phoneModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" onclick="closePhoneModal()">&times;</span>
+        <h3>Запись на услугу</h3>
+        <p>Позвоните нам для записи:</p>
+        <a href="tel:+79063954242" class="phone-number">+7 (906) 395-42-42</a>
+    </div>
+</div>
+
+<style>
+    /* Существующие стили остаются без изменений */
+    .services-header {
+        margin-bottom: 80px;
+        text-align: center;
+        padding-top: 50px;
+    }
+    .carousel-title {
+        margin-top: 40px;
+        font-size: 2.5rem;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .services-container {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .service-category {
+        background: linear-gradient(
+            135deg,
+            rgba(0, 0, 0, 0.7) 0%,
+            rgba(0, 0, 0, 0.5) 50%,
+            rgba(0, 0, 0, 0.7) 100%
+        );
+        border-radius: 15px;
+        padding: 20px 25px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Полностью убираем псевдоэлемент, который создавал белые полоски/звездочки */
+    .service-category::before {
+        display: none;
+    }
+
+    .service-category:hover {
+        transform: translateY(-5px);
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.22) 0%,
+            rgba(255, 255, 255, 0.12) 100%
+        );
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .category-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        text-align: center;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    .service-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        gap: 30px;
+    }
+    .service-item:last-child {
+        border-bottom: none;
+    }
+    .service-image-container {
+        flex-shrink: 0;
+        width: 200px;
+        height: 200px;
+        border-radius: 15px;
+        overflow: hidden;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        position: relative;
+        background: #2a2a2a;
+        z-index: 2;
+    }
+    .service-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+        display: block;
+        position: relative;
+        z-index: 3;
+    }
+
+    .service-video {
+        object-fit: cover;
+        background: #000;
+    }
+
+    .service-video::-webkit-media-controls {
+        display: none !important;
+    }
+
+    .service-video::-webkit-media-controls-enclosure {
+        display: none !important;
+    }
+
+    .service-image:hover {
+        transform: scale(1.05);
+    }
+
+    .video-fallback {
+        display: none;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 14px;
+        text-align: center;
+        padding: 10px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 4;
+    }
+
+    .service-details {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        z-index: 2;
+    }
+    .service-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 10px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        line-height: 1.4;
+    }
+    .service-duration {
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 5px;
+    }
+    .service-price {
+        font-size: 18px;
+        font-weight: 700;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        margin-top: auto;
+    }
+    .service-variants {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+        width: 60%;
+    }
+    .service-variant {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 5px 0;
+    }
+    .variant-space {
+        flex: 1;
+    }
+    .variant-duration {
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0 20px;
+        min-width: 80px;
+        text-align: center;
+    }
+
+    .variant-price {
+        font-size: 18px;
+        font-weight: 700;
+        color: white;
+        min-width: 100px;
+        text-align: right;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .divider {
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent
+        );
+        margin: 30px 0;
+        border-radius: 1px;
+    }
+
+    /* Стили для кнопки записи */
+    .booking-button {
+        background: linear-gradient(135deg, #d4af37 0%, #b8942e 100%);
+        color: #1a1a1a;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 12px;
+        width: fit-content;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .booking-button:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #e5c158 0%, #c9a32e 100%);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Стили для модального окна */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+        margin: 15% auto;
+        padding: 25px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        position: relative;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content h3 {
+        color: #d4af37;
+        margin-bottom: 15px;
+        font-size: 24px;
+    }
+
+    .modal-content p {
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 15px;
+        font-size: 16px;
+    }
+
+    .phone-number {
+        display: inline-block;
+        font-size: 24px;
+        font-weight: bold;
+        color: #d4af37;
+        text-decoration: none;
+        padding: 10px 20px;
+        border: 2px solid #d4af37;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+    }
+
+    .phone-number:hover {
+        background-color: #d4af37;
+        color: #1a1a1a;
+        transform: scale(1.05);
+    }
+
+    .close-button {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .close-button:hover {
+        color: #d4af37;
+    }
+
+    @media (max-width: 768px) {
+        .services-container {
+            padding: 0 15px;
+            gap: 25px;
+        }
+
+        .services-header {
+            margin-bottom: 50px;
+            padding-top: 30px;
+        }
+
+        .carousel-title {
+            font-size: 2rem;
+            margin-top: 25px;
+        }
+
+        .service-category {
+            padding: 15px 20px;
+            border-radius: 12px;
+        }
+
+        .category-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .service-item {
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 0;
+            text-align: center;
+        }
+
+        .service-image-container {
+            width: 100%;
+            height: auto;
+            max-width: none;
+            aspect-ratio: 1/1;
+        }
+
+        .service-name {
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .service-duration {
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .service-price {
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .service-variants {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .service-variant {
+            font-size: 14px;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .variant-duration {
+            font-size: 14px;
+            margin: 0 10px;
+            text-align: center;
+        }
+
+        .variant-price {
+            font-size: 16px;
+            text-align: right;
+        }
+
+        .booking-button {
+            margin: 12px auto 0 auto;
+        }
+
+        .modal-content {
+            margin: 30% auto;
+            padding: 20px;
+        }
+
+        .phone-number {
+            font-size: 20px;
+            padding: 8px 16px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .services-container {
+            padding: 0 10px;
+            gap: 20px;
+        }
+
+        .services-header {
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+
+        .carousel-title {
+            font-size: 1.8rem;
+            margin-top: 20px;
+        }
+
+        .service-category {
+            padding: 12px 15px;
+            border-radius: 10px;
+        }
+
+        .category-title {
+            font-size: 1.1rem;
+        }
+
+        .service-image-container {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1/1;
+        }
+    }
+</style>
+
+<script>
+    function showPhoneModal() {
+        document.getElementById("phoneModal").style.display = "block";
+    }
+
+    function closePhoneModal() {
+        document.getElementById("phoneModal").style.display = "none";
+    }
+
+    // Закрытие модального окна при клике вне его области
+    window.onclick = function (event) {
+        const modal = document.getElementById("phoneModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+</script>
+
+{% endblock %}

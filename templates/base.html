@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+        />
+        <title>СПА-салон Luna | Космическая гармония и релакс</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&amp;family=Manrope:wght@200;300;400;500;600;700;800"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Comfortaa", Arial, sans-serif;
+            }
+
+            body {
+                min-height: 100vh;
+                background:
+                    linear-gradient(rgba(7, 0, 38, 0.85), rgba(0, 0, 0, 0.8)),
+                    #000000;
+                background-size: cover;
+                color: white;
+                display: flex;
+                flex-direction: column;
+                overflow-x: hidden;
+                position: relative;
+                padding-bottom: 95px;
+            }
+
+            /* ===== КОСМИЧЕСКИЕ ЭФФЕКТЫ ===== */
+            .stars {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 1;
+            }
+            .star {
+                position: absolute;
+                background-color: #ffffff;
+                border-radius: 50%;
+                box-shadow:
+                    0 0 8px rgba(255, 255, 255, 1),
+                    0 0 12px rgba(255, 255, 255, 0.6);
+                will-change: opacity, transform;
+            }
+            /* АНИМАЦИЯ ЗВЕЗД: по умолчанию (десктоп) — мерцание */
+            .star {
+                animation: twinkle 3s infinite;
+            }
+            @keyframes twinkle {
+                0%,
+                100% {
+                    opacity: 0.3;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scale(1.2);
+                }
+            }
+            /* МОБИЛЬНОЕ ПРАВИЛО: отключаем анимацию звезд (они статичны) */
+            @media (max-width: 768px) {
+                .star {
+                    animation: none !important;
+                    opacity: 0.5;
+                    transform: scale(1);
+                }
+            }
+
+            /* Плавающие элементы (кометы, кружки и т.д.) — полностью скрыты на мобильных */
+            .floating-elements {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 2;
+                overflow: hidden;
+            }
+            .floating-element {
+                position: absolute;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+                animation: floatElement 15s infinite linear;
+                will-change: transform, opacity;
+            }
+            @keyframes floatElement {
+                0% {
+                    transform: translate3d(0, 0, 0) rotate(0deg);
+                }
+                100% {
+                    transform: translate3d(0, -1000px, 0) rotate(720deg);
+                }
+            }
+            /* МОБИЛЬНЫЕ УСТРОЙСТВА: КОМЕТ (floating-elements) НЕ ДОЛЖНО БЫТЬ ВООБЩЕ */
+            @media (max-width: 768px) {
+                .floating-elements {
+                    display: none !important;
+                }
+            }
+
+            .ufo-system {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 25;
+            }
+            .ufo {
+                position: absolute;
+                font-size: 24px;
+                color: #ffffff;
+                text-shadow:
+                    0 0 10px #ffffff,
+                    0 0 20px #ffffff;
+                opacity: 0;
+            }
+
+            /* ===== ДЕСКТОПНАЯ ШАПКА — компактная, но лого визуально крупное ===== */
+            .header {
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90%;
+                max-width: 1200px;
+                padding: 10px 30px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                z-index: 100;
+                background: linear-gradient(
+                    135deg,
+                    rgba(0, 0, 0, 0.75) 0%,
+                    rgba(0, 0, 0, 0.55) 50%,
+                    rgba(0, 0, 0, 0.75) 100%
+                );
+                border-radius: 28px;
+                box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.4),
+                    0 0 0 1px rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                animation: slideDown 0.8s ease-out;
+                backdrop-filter: blur(6px);
+                overflow: visible;
+            }
+            @keyframes slideDown {
+                0% {
+                    transform: translateX(-50%) translate3d(0, -100px, 0);
+                    opacity: 0;
+                }
+                100% {
+                    transform: translateX(-50%) translate3d(0, 0, 0);
+                    opacity: 1;
+                }
+            }
+            .logo {
+                font-size: 24px;
+                font-weight: 700;
+                text-decoration: none;
+                color: white;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                transition: transform 0.2s ease;
+                z-index: 101;
+                overflow: visible;
+            }
+            .logo:hover {
+                transform: scale(1.01);
+            }
+            .logo-img {
+                height: 60px;
+                width: auto;
+                filter: brightness(0) invert(1);
+                transition: transform 0.25s ease;
+                display: block;
+            }
+            .logo:hover .logo-img {
+                transform: rotate(3deg);
+            }
+
+            /* ДЕСКТОП: ЛОГО ВИЗУАЛЬНО УВЕЛИЧЕНО (НО НЕ РАСТЯГИВАЕТ КОНТЕЙНЕР) */
+            @media (min-width: 769px) {
+                .logo-img {
+                    transform: scale(2);
+                    transform-origin: left center;
+                    margin-right: 24px;
+                }
+                .logo {
+                    gap: 0;
+                    overflow: visible;
+                }
+                .header {
+                    padding: 10px 32px;
+                }
+            }
+
+            /* Десктопное меню (горизонтальное) */
+            .navbar {
+                display: flex;
+                gap: 12px;
+            }
+            .nav-button {
+                font-size: 16px;
+                color: white;
+                text-decoration: none;
+                padding: 10px 20px;
+                border-radius: 30px;
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.25) 0%,
+                    rgba(255, 255, 255, 0.15) 100%
+                );
+                transition: all 0.3s ease;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                position: relative;
+                overflow: hidden;
+                font-weight: 600;
+                backdrop-filter: blur(2px);
+            }
+            .nav-button::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent
+                );
+                transition: left 0.5s ease;
+            }
+            .nav-button:hover::before {
+                left: 100%;
+            }
+            .nav-button:hover {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.35) 0%,
+                    rgba(255, 255, 255, 0.25) 100%
+                );
+                transform: translateY(-2px);
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+                border-color: rgba(255, 255, 255, 0.6);
+            }
+
+            /* ===== МОБИЛЬНАЯ КНОПКА (три полоски) ===== */
+            .menu-toggle {
+                display: none;
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(255, 255, 255, 0.45);
+                width: 54px;
+                height: 54px;
+                border-radius: 50%;
+                cursor: pointer;
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1000;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                box-shadow:
+                    0 6px 18px rgba(0, 0, 0, 0.5),
+                    0 0 0 1px rgba(255, 255, 255, 0.2);
+                transition: all 0.2s ease;
+            }
+            .menu-toggle span {
+                display: block;
+                width: 26px;
+                height: 3px;
+                background: linear-gradient(90deg, #ffffff, #e0c3ff);
+                margin: 4px auto;
+                transition: all 0.3s ease;
+                border-radius: 4px;
+                box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+            }
+            .menu-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(6px, 6px);
+                background: linear-gradient(90deg, #ffdd99, #ffbb66);
+            }
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+                transform: translateX(-8px);
+            }
+            .menu-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(6px, -6px);
+                background: linear-gradient(90deg, #ffdd99, #ffbb66);
+            }
+
+            /* Вертикальное меню (мобильное) */
+            .vertical-menu {
+                position: fixed;
+                top: 85px;
+                right: 20px;
+                width: 260px;
+                background: linear-gradient(
+                    135deg,
+                    rgba(0, 0, 0, 0.96) 0%,
+                    rgba(20, 0, 40, 0.94) 100%
+                );
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                border-radius: 32px;
+                padding: 18px 0;
+                z-index: 999;
+                display: none;
+                box-shadow: 0 20px 35px rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(20px);
+                transition: all 0.2s ease;
+            }
+            .vertical-menu.active {
+                display: block;
+                animation: fadeSlide 0.2s ease-out;
+            }
+            @keyframes fadeSlide {
+                from {
+                    opacity: 0;
+                    transform: translateY(-12px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .vertical-menu .nav-button {
+                display: block;
+                margin: 12px 18px;
+                text-align: center;
+                font-size: 16px;
+                padding: 12px 18px;
+                border-radius: 40px;
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                font-weight: 600;
+            }
+            .vertical-menu .nav-button:hover {
+                background: rgba(255, 255, 255, 0.28);
+                transform: scale(1.02);
+            }
+
+            /* Секции контента */
+            .section {
+                padding: 80px 20px;
+                position: relative;
+                z-index: 10;
+            }
+            .section-title {
+                font-size: 36px;
+                font-weight: 700;
+                text-align: center;
+                margin-bottom: 50px;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+                position: relative;
+            }
+            .section-title::after {
+                content: "";
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100px;
+                height: 3px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.8),
+                    transparent
+                );
+            }
+            .carousel-title {
+                text-align: center;
+                font-size: 38px;
+                margin-bottom: 40px;
+                font-weight: 700;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+                padding-top: 20px;
+                position: relative;
+            }
+            .carousel-title::after {
+                content: "";
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100px;
+                height: 3px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.8),
+                    transparent
+                );
+            }
+            .carousel-container {
+                position: relative;
+                width: 100%;
+                max-width: 1000px;
+                margin: 0 auto;
+                overflow: hidden;
+                padding: 25px 0;
+                margin-bottom: 50px;
+            }
+            .carousel-track {
+                display: flex;
+                transition: transform 0.5s ease;
+                will-change: transform;
+                gap: 25px;
+            }
+            .carousel-item {
+                flex: 0 0 calc(33.333% - 17px);
+                background: linear-gradient(
+                    135deg,
+                    rgba(0, 0, 0, 0.7) 0%,
+                    rgba(0, 0, 0, 0.5) 50%,
+                    rgba(0, 0, 0, 0.7) 100%
+                );
+                border-radius: 20px;
+                padding: 20px;
+                transition: all 0.3s ease;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                min-height: 420px;
+                display: flex;
+                flex-direction: column;
+                backdrop-filter: blur(2px);
+            }
+            .carousel-item:hover {
+                transform: translateY(-5px);
+                background: rgba(255, 255, 255, 0.18);
+                border-color: rgba(255, 255, 255, 0.4);
+            }
+            .carousel-image {
+                width: 100%;
+                height: 180px;
+                object-fit: cover;
+                border-radius: 15px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            }
+            .carousel-caption {
+                font-size: 15px;
+                font-weight: 600;
+                color: white;
+                line-height: 1.5;
+                flex-grow: 1;
+            }
+            .caption-title {
+                font-size: 18px;
+                font-weight: 700;
+                margin-bottom: 12px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            .carousel-btn {
+                position: absolute;
+                top: 40%;
+                transform: translateY(-50%);
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(6px);
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                color: white;
+                font-size: 20px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .carousel-btn:hover {
+                background: rgba(255, 255, 255, 0.25);
+                transform: translateY(-50%) scale(1.08);
+            }
+            .carousel-btn.prev {
+                left: 10px;
+            }
+            .carousel-btn.next {
+                right: 10px;
+            }
+
+            /* Футер */
+            .footer {
+                background: linear-gradient(
+                    135deg,
+                    rgba(0, 0, 0, 0.9) 0%,
+                    rgba(0, 0, 0, 0.7) 100%
+                );
+                padding: 50px 20px 30px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                position: relative;
+                z-index: 10;
+                backdrop-filter: blur(2px);
+            }
+            .footer-content {
+                max-width: 1200px;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 40px;
+            }
+            .footer-section h3 {
+                font-size: 20px;
+                margin-bottom: 20px;
+                color: white;
+            }
+            .footer-section p {
+                font-size: 16px;
+                line-height: 1.6;
+                color: rgba(255, 255, 255, 0.8);
+            }
+            .social-links {
+                display: flex;
+                gap: 15px;
+                margin-top: 20px;
+            }
+            .social-link {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.15);
+                color: white;
+                font-size: 20px;
+                transition: all 0.3s ease;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+            }
+            .social-link:hover {
+                background: rgba(255, 255, 255, 0.35);
+                transform: translateY(-2px);
+            }
+            .footer-bottom {
+                text-align: center;
+                margin-top: 40px;
+                padding-top: 20px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                color: rgba(255, 255, 255, 0.8);
+            }
+            .footer-bottom a {
+                color: rgba(255, 255, 255, 0.7);
+                text-decoration: underline;
+            }
+
+            /* НИЖНИЕ ФИКСИРОВАННЫЕ КНОПКИ */
+            .fixed-bottom-buttons {
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                gap: 16px;
+                z-index: 99;
+                padding: 0 20px;
+                max-width: 550px;
+                width: 90%;
+            }
+            .fixed-bottom-button {
+                flex: 1;
+                padding: 16px 18px;
+                text-align: center;
+                font-size: 16px;
+                font-weight: 700;
+                color: white;
+                text-decoration: none;
+                background: rgba(20, 20, 40, 0.55);
+                backdrop-filter: blur(14px);
+                border-radius: 40px;
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+                transition: all 0.25s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                letter-spacing: 0.5px;
+            }
+            .fixed-bottom-button:hover {
+                background: rgba(255, 255, 255, 0.22);
+                backdrop-filter: blur(18px);
+                transform: translateY(-2px);
+                border-color: rgba(255, 255, 255, 0.7);
+            }
+
+            /* МОБИЛЬНАЯ АДАПТАЦИЯ + дополнительная прокрутка для ИНН */
+            @media (max-width: 768px) {
+                .header {
+                    display: none;
+                }
+                .menu-toggle {
+                    display: flex;
+                }
+                .vertical-menu {
+                    top: 85px;
+                    right: 20px;
+                    width: 250px;
+                }
+                .carousel-item {
+                    flex: 0 0 calc(100% - 10px);
+                    min-height: 380px;
+                }
+                .carousel-btn {
+                    width: 40px;
+                    height: 40px;
+                }
+                .fixed-bottom-buttons {
+                    gap: 12px;
+                    bottom: 16px;
+                }
+                .fixed-bottom-button {
+                    padding: 14px 12px;
+                    font-size: 14px;
+                }
+                body {
+                    padding-bottom: 85px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .menu-toggle {
+                    width: 50px;
+                    height: 50px;
+                    top: 15px;
+                    right: 15px;
+                }
+                .vertical-menu {
+                    width: 220px;
+                    top: 75px;
+                    right: 15px;
+                }
+                .fixed-bottom-button {
+                    font-size: 12.5px;
+                    padding: 12px 8px;
+                }
+                body {
+                    padding-bottom: 80px;
+                }
+            }
+
+            /* Для очень больших экранов можно оставить отступ, чтобы контент не прилипал к кнопкам */
+            @media (min-width: 1400px) {
+                body {
+                    padding-bottom: 100px;
+                }
+            }
+
+            .content-wrapper {
+                flex: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="stars" id="stars"></div>
+        <div class="floating-elements" id="floatingElements"></div>
+        <div class="ufo-system" id="ufoSystem"></div>
+
+        <!-- ДЕСКТОПНАЯ ШАПКА -->
+        <header class="header" id="mainHeader">
+            <a href="{{ url_for('index') }}" class="logo">
+                <img
+                    src="{{ url_for('static', filename='spa.png') }}"
+                    alt="SPA Luna"
+                    class="logo-img"
+                />
+            </a>
+            <nav class="navbar">
+                <a href="{{ url_for('uslugi') }}" class="nav-button">Услуги</a>
+                <a href="{{ url_for('contaktu') }}" class="nav-button"
+                    >Контакты</a
+                >
+                <a href="{{ url_for('otzuwu') }}" class="nav-button">Отзывы</a>
+                <a href="{{ url_for('galareya') }}" class="nav-button"
+                    >Галерея</a
+                >
+                <a href="{{ url_for('news') }}" class="nav-button">Новости</a>
+            </nav>
+        </header>
+
+        <!-- Мобильная кнопка-меню (круг) -->
+        <div class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <!-- Мобильное вертикальное меню -->
+        <div class="vertical-menu" id="verticalMenu">
+            <a href="{{ url_for('uslugi') }}" class="nav-button">Услуги</a>
+            <a href="{{ url_for('contaktu') }}" class="nav-button">Контакты</a>
+            <a href="{{ url_for('otzuwu') }}" class="nav-button">Отзывы</a>
+            <a href="{{ url_for('galareya') }}" class="nav-button">Галерея</a>
+            <a href="{{ url_for('news') }}" class="nav-button">Новости</a>
+        </div>
+
+        <!-- Основной контент -->
+        <div class="content-wrapper">
+            {% block content %}
+            <section
+                class="section"
+                style="text-align: center; padding-top: 140px"
+            >
+                <h1 class="section-title" style="font-size: 52px">
+                    Космическая гармония
+                </h1>
+                <p style="font-size: 20px; max-width: 700px; margin: 20px auto">
+                    СПА-салон Luna — место, где звёзды встречаются с релаксом.
+                    Погрузитесь в атмосферу невесомости и восстановите баланс.
+                </p>
+            </section>
+            <div class="carousel-title">✨ Наши ритуалы ✨</div>
+            <div class="carousel-container">
+                <div class="carousel-track">
+                    <div class="carousel-item">
+                        <img
+                            src="https://placehold.co/400x300/2a1e3a/ffffff?text=Лунный+массаж"
+                            class="carousel-image"
+                            alt="Массаж"
+                        />
+                        <div class="carousel-caption">
+                            <div class="caption-title">Лунный массаж</div>
+                            <p>
+                                Глубокое расслабление с аромамаслами и звуками
+                                космоса. Снимает напряжение и дарит лёгкость.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img
+                            src="https://placehold.co/400x300/2a1e3a/ffffff?text=Звёздный+пилинг"
+                            class="carousel-image"
+                            alt="Пилинг"
+                        />
+                        <div class="carousel-caption">
+                            <div class="caption-title">Звёздный пилинг</div>
+                            <p>
+                                Обновление кожи с минералами метеоритов и
+                                экстрактами трав. Сияние изнутри.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img
+                            src="https://placehold.co/400x300/2a1e3a/ffffff?text=Невесомость+SPA"
+                            class="carousel-image"
+                            alt="SPA"
+                        />
+                        <div class="carousel-caption">
+                            <div class="caption-title">Невесомость SPA</div>
+                            <p>
+                                Флоатинг-капсула с хромотерапией и звуками
+                                вселенной. Полное перезагрузка.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img
+                            src="https://placehold.co/400x300/2a1e3a/ffffff?text=Обертывание+Туманность"
+                            class="carousel-image"
+                            alt="Обертывание"
+                        />
+                        <div class="carousel-caption">
+                            <div class="caption-title">
+                                Обертывание "Туманность"
+                            </div>
+                            <p>
+                                Детокс и увлажнение с морскими водорослями и
+                                косметическими глинами.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-btn prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-btn next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            {% endblock %}
+        </div>
+
+        <!-- Футер -->
+        <footer class="footer" id="contacts">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <p>
+                        <i class="fas fa-map-marker-alt"></i> г. Пенза, ул.
+                        Ключевая, д.99 пом.1
+                    </p>
+                    <p><i class="fas fa-phone"></i> +7(906)395-42-42</p>
+                    <p>
+                        <i class="fas fa-clock"></i> Ежедневно с 09:00 до 21:00
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h3>Социальные сети</h3>
+                    <div class="social-links">
+                        <a
+                            href="https://vk.com/spaluna_penza"
+                            class="social-link"
+                            ><i class="fab fa-vk"></i
+                        ></a>
+                        <a
+                            href="https://www.instagram.com/spa_luna_penza"
+                            class="social-link"
+                            ><i class="fab fa-instagram"></i
+                        ></a>
+                        <a href="#" class="social-link"
+                            ><i class="fab fa-telegram"></i
+                        ></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; СПА-салон LUNA. Все права защищены.</p>
+                <a href="{{ url_for('privacy') }}"
+                    >Политика конфиденциальности</a
+                >
+                <p>ㅤ</p>
+                <p>ИП Павлова Ольга Анатольевна</p>
+                <p>ОГРН 318583500039071</p>
+                <p><strong>ИНН 583517744729</strong></p>
+            </div>
+        </footer>
+
+        <!-- Фиксированные кнопки -->
+        <div class="fixed-bottom-buttons">
+            <a href="https://b1389556.yclients.com" class="fixed-bottom-button">
+                <i class="fas fa-calendar-alt"></i> Записаться онлайн
+            </a>
+            <a href="/api/create_certificate" class="fixed-bottom-button">
+                <i class="fas fa-certificate"></i> Сертификаты
+            </a>
+        </div>
+
+        <script>
+            // Генерация звездного фона (звезды остаются на месте, но анимация отключается на мобильных через CSS)
+            function createStars() {
+                const starsContainer = document.getElementById("stars");
+                const fragment = document.createDocumentFragment();
+                const numberOfStars = 130;
+                for (let i = 0; i < numberOfStars; i++) {
+                    const star = document.createElement("div");
+                    star.className = "star";
+                    const size = Math.random() * 3 + 1;
+                    star.style.cssText = `width: ${size}px; height: ${size}px; left: ${Math.random() * 100}%; top: ${Math.random() * 100}%;`;
+                    // Для десктопа оставляем стандартную анимацию (через CSS класс).
+                    // Дополнительные инлайн-стили не мешают.
+                    fragment.appendChild(star);
+                }
+                starsContainer.appendChild(fragment);
+            }
+
+            // Функция создания плавающих элементов (кометы).
+            // НО на мобильных они будут скрыты через display:none (CSS), но создание всё равно происходит,
+            // чтобы не нарушать логику. Однако для полной оптимизации на мобильных можно пропустить создание.
+            // Оставляем как есть — они создадутся, но не будут видны из-за @media display:none.
+            function createFloatingElements() {
+                // Дополнительная проверка: если ширина экрана <= 768, можно не создавать элементы, экономя ресурсы.
+                if (window.innerWidth <= 768) {
+                    return; // На мобильных устройствах вообще не создаем кометы
+                }
+                const container = document.getElementById("floatingElements");
+                if (!container) return;
+                const symbols = ["●", "◆", "▲", "✦", "■", "♦", "♢"];
+                for (let i = 0; i < 24; i++) {
+                    const el = document.createElement("div");
+                    el.className = "floating-element";
+                    el.textContent =
+                        symbols[Math.floor(Math.random() * symbols.length)];
+                    const size = Math.random() * 18 + 8;
+                    const opacity = Math.random() * 0.25 + 0.05;
+                    el.style.cssText = `width: ${size}px; height: ${size}px; left: ${Math.random() * 100}%; top: ${100 + Math.random() * 40}%; animation-delay: ${Math.random() * 15}s; animation-duration: ${Math.random() * 20 + 12}s; opacity: ${opacity}; font-size: ${size}px; color: rgba(255,255,255,${opacity});`;
+                    container.appendChild(el);
+                }
+            }
+
+            // Универсальная карусель
+            function initCarousels() {
+                document
+                    .querySelectorAll(".carousel-container")
+                    .forEach((carousel) => {
+                        const track = carousel.querySelector(".carousel-track");
+                        const items = track.querySelectorAll(".carousel-item");
+                        const prevBtn =
+                            carousel.querySelector(".carousel-btn.prev");
+                        const nextBtn =
+                            carousel.querySelector(".carousel-btn.next");
+                        if (!items.length) return;
+                        let currentIndex = 0;
+                        let itemsPerView = getItemsPerView();
+
+                        function getItemsPerView() {
+                            const w = window.innerWidth;
+                            if (w <= 768) return 1;
+                            if (w <= 1024) return 2;
+                            return 3;
+                        }
+                        function updateCarousel() {
+                            const itemWidth =
+                                items[0].getBoundingClientRect().width + 25;
+                            track.style.transform = `translate3d(-${currentIndex * itemWidth}px, 0, 0)`;
+                        }
+                        function nextSlide() {
+                            const maxIndex = items.length - itemsPerView;
+                            if (currentIndex < maxIndex) currentIndex++;
+                            else currentIndex = 0;
+                            updateCarousel();
+                        }
+                        function prevSlide() {
+                            if (currentIndex > 0) currentIndex--;
+                            else currentIndex = items.length - itemsPerView;
+                            updateCarousel();
+                        }
+                        if (nextBtn)
+                            nextBtn.addEventListener("click", nextSlide);
+                        if (prevBtn)
+                            prevBtn.addEventListener("click", prevSlide);
+                        let autoScroll;
+                        if (window.innerWidth > 768) {
+                            autoScroll = setInterval(nextSlide, 4800);
+                            carousel.addEventListener("mouseenter", () =>
+                                clearInterval(autoScroll),
+                            );
+                            carousel.addEventListener("mouseleave", () => {
+                                autoScroll = setInterval(nextSlide, 4800);
+                            });
+                        }
+                        window.addEventListener("resize", () => {
+                            itemsPerView = getItemsPerView();
+                            currentIndex = 0;
+                            updateCarousel();
+                            if (autoScroll) clearInterval(autoScroll);
+                            if (window.innerWidth > 768)
+                                autoScroll = setInterval(nextSlide, 4800);
+                        });
+                        updateCarousel();
+                    });
+            }
+
+            // Мобильное меню
+            function initMobileMenu() {
+                const toggle = document.getElementById("menuToggle");
+                const verticalMenu = document.getElementById("verticalMenu");
+                if (!toggle || !verticalMenu) return;
+                toggle.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    toggle.classList.toggle("active");
+                    verticalMenu.classList.toggle("active");
+                });
+                verticalMenu.querySelectorAll(".nav-button").forEach((btn) => {
+                    btn.addEventListener("click", () => {
+                        toggle.classList.remove("active");
+                        verticalMenu.classList.remove("active");
+                    });
+                });
+                document.addEventListener("click", (event) => {
+                    if (
+                        !toggle.contains(event.target) &&
+                        !verticalMenu.contains(event.target) &&
+                        verticalMenu.classList.contains("active")
+                    ) {
+                        toggle.classList.remove("active");
+                        verticalMenu.classList.remove("active");
+                    }
+                });
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                createStars();
+                createFloatingElements(); // на мобильных (ширина <=768) функция вернёт управление досрочно, кометы не создаются
+                initCarousels();
+                initMobileMenu();
+                // Плавный скролл для якорей
+                document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                    anchor.addEventListener("click", function (e) {
+                        const href = this.getAttribute("href");
+                        if (href && href !== "#" && href.length > 1) {
+                            const target = document.querySelector(href);
+                            if (target) {
+                                e.preventDefault();
+                                target.scrollIntoView({
+                                    behavior: "smooth",
+                                    block: "start",
+                                });
+                            }
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>

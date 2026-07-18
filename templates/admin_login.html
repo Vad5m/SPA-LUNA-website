@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>СПА-салон Luna | Администратор</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&amp;family=Manrope:wght@200;300;400;500;600;700;800"
+            type="text/css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Comfortaa", Arial, sans-serif;
+            }
+
+            body {
+                min-height: 100vh;
+                background:
+                    linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.7)),
+                    #000000;
+                background-size: cover;
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+                position: relative;
+            }
+
+            .stars {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 1;
+            }
+
+            .star {
+                position: absolute;
+                background-color: #ffffff;
+                border-radius: 50%;
+                animation: twinkle 3s infinite;
+                box-shadow:
+                    0 0 8px rgba(255, 255, 255, 1),
+                    0 0 12px rgba(255, 255, 255, 0.6);
+                will-change: opacity, transform;
+            }
+
+            @keyframes twinkle {
+                0%,
+                100% {
+                    opacity: 0.3;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scale(1.2);
+                }
+            }
+
+            .floating-elements {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 2;
+                overflow: hidden;
+            }
+
+            .floating-element {
+                position: absolute;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+                animation: floatElement 15s infinite linear;
+                will-change: transform, opacity;
+            }
+
+            @keyframes floatElement {
+                0% {
+                    transform: translate3d(0, 0, 0) rotate(0deg);
+                }
+                100% {
+                    transform: translate3d(0, -1000px, 0) rotate(720deg);
+                }
+            }
+
+            .login-container {
+                position: relative;
+                z-index: 10;
+                width: 100%;
+                max-width: 450px;
+                padding: 20px;
+            }
+
+            .login-card {
+                background: linear-gradient(
+                    135deg,
+                    rgba(0, 0, 0, 0.7) 0%,
+                    rgba(0, 0, 0, 0.5) 50%,
+                    rgba(0, 0, 0, 0.7) 100%
+                );
+                border-radius: 25px;
+                padding: 40px 30px;
+                box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.4),
+                    0 0 0 1px rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                backdrop-filter: blur(10px);
+                animation: slideUp 0.8s ease-out;
+            }
+
+            @keyframes slideUp {
+                0% {
+                    transform: translateY(50px);
+                    opacity: 0;
+                }
+                100% {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            .logo {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            .logo-img {
+                height: 80px;
+                width: auto;
+                filter: brightness(0) invert(1);
+                margin-bottom: 15px;
+            }
+
+            .logo h1 {
+                font-size: 28px;
+                font-weight: 700;
+                color: white;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+
+            .logo p {
+                font-size: 14px;
+                opacity: 0.8;
+                margin-top: 5px;
+            }
+
+            .form-group {
+                margin-bottom: 25px;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 600;
+                font-size: 16px;
+                color: rgba(255, 255, 255, 0.9);
+            }
+
+            .input-with-icon {
+                position: relative;
+            }
+
+            .input-with-icon i {
+                position: absolute;
+                left: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 18px;
+            }
+
+            .form-control {
+                width: 100%;
+                padding: 15px 15px 15px 45px;
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.15) 0%,
+                    rgba(255, 255, 255, 0.1) 100%
+                );
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                border-radius: 15px;
+                color: white;
+                font-size: 16px;
+                transition: all 0.3s ease;
+                outline: none;
+            }
+
+            .form-control::placeholder {
+                color: rgba(255, 255, 255, 0.5);
+            }
+
+            .form-control:focus {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.25) 0%,
+                    rgba(255, 255, 255, 0.2) 100%
+                );
+                border: 1px solid rgba(255, 255, 255, 0.5);
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            }
+
+            .password-toggle {
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                color: rgba(255, 255, 255, 0.6);
+                cursor: pointer;
+                font-size: 18px;
+                transition: color 0.3s ease;
+            }
+
+            .password-toggle:hover {
+                color: rgba(255, 255, 255, 1);
+            }
+
+            .btn-login {
+                width: 100%;
+                padding: 16px;
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.25) 0%,
+                    rgba(255, 255, 255, 0.15) 100%
+                );
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                border-radius: 15px;
+                color: white;
+                font-size: 18px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                margin-top: 20px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .btn-login::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent
+                );
+                transition: left 0.5s ease;
+            }
+
+            .btn-login:hover::before {
+                left: 100%;
+            }
+
+            .btn-login:hover {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.35) 0%,
+                    rgba(255, 255, 255, 0.25) 100%
+                );
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+                border: 1px solid rgba(255, 255, 255, 0.4);
+            }
+
+            .error-message {
+                background: rgba(255, 87, 87, 0.2);
+                border: 1px solid rgba(255, 87, 87, 0.5);
+                border-radius: 10px;
+                padding: 12px;
+                margin-bottom: 20px;
+                color: #ff5757;
+                font-size: 14px;
+                text-align: center;
+                display: none;
+            }
+
+            .error-message.show {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .back-home {
+                text-align: center;
+                margin-top: 25px;
+            }
+
+            .back-home a {
+                color: rgba(255, 255, 255, 0.8);
+                text-decoration: none;
+                font-size: 14px;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                transition: color 0.3s ease;
+            }
+
+            .back-home a:hover {
+                color: rgba(255, 255, 255, 1);
+            }
+
+            @media (max-width: 480px) {
+                .login-container {
+                    padding: 15px;
+                }
+
+                .login-card {
+                    padding: 30px 20px;
+                }
+
+                .logo-img {
+                    height: 60px;
+                }
+
+                .logo h1 {
+                    font-size: 24px;
+                }
+
+                .form-control {
+                    padding: 12px 12px 12px 40px;
+                }
+
+                .btn-login {
+                    padding: 14px;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="stars" id="stars"></div>
+        <div class="floating-elements" id="floatingElements"></div>
+
+        <div class="login-container">
+            <div class="login-card">
+                <div class="logo">
+                    <img
+                        src="https://via.placeholder.com/80/ffffff/000000?text=SPA"
+                        alt="SPA Luna"
+                        class="logo-img"
+                    />
+                    <h1>Панель администратора</h1>
+                    <p>СПА-салон Luna</p>
+                </div>
+
+                {% if error %}
+                <div class="error-message show" id="errorMessage">
+                    {{ error }}
+                </div>
+                {% else %}
+                <div class="error-message" id="errorMessage">
+                    Неверный логин или пароль. Попробуйте еще раз.
+                </div>
+                {% endif %}
+
+                <form id="loginForm" method="POST" action="/admin/login/">
+                    <div class="form-group">
+                        <label for="username">Логин</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                class="form-control"
+                                placeholder="Введите ваш логин"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Пароль</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-control"
+                                placeholder="Введите ваш пароль"
+                                required
+                            />
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                id="togglePassword"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-login">
+                        <i class="fas fa-sign-in-alt"></i> Войти в систему
+                    </button>
+                </form>
+
+                <div class="back-home">
+                    <a href="/">
+                        <i class="fas fa-arrow-left"></i> Вернуться на главную
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Создание звездного фона
+            function createStars() {
+                const starsContainer = document.getElementById("stars");
+                const fragment = document.createDocumentFragment();
+                const numberOfStars = 150;
+
+                for (let i = 0; i < numberOfStars; i++) {
+                    const star = document.createElement("div");
+                    star.className = "star";
+                    const size = Math.random() * 3 + 1;
+                    const left = Math.random() * 100;
+                    const top = Math.random() * 100;
+                    const delay = Math.random() * 3;
+                    const duration = Math.random() * 3 + 2;
+
+                    star.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${left}%;
+                    top: ${top}%;
+                    animation-delay: ${delay}s;
+                    animation-duration: ${duration}s;
+                `;
+
+                    fragment.appendChild(star);
+                }
+                starsContainer.appendChild(fragment);
+            }
+
+            // Создание плавающих элементов
+            function createFloatingElements() {
+                const container = document.getElementById("floatingElements");
+                const fragment = document.createDocumentFragment();
+                const elements = ["●", "◆", "▲", "✦", "■", "♦"];
+                const numberOfElements = 15;
+
+                for (let i = 0; i < numberOfElements; i++) {
+                    const element = document.createElement("div");
+                    element.className = "floating-element";
+                    element.textContent =
+                        elements[Math.floor(Math.random() * elements.length)];
+                    const size = Math.random() * 15 + 8;
+                    const left = Math.random() * 100;
+                    const delay = Math.random() * 15;
+                    const duration = Math.random() * 20 + 10;
+                    const opacity = Math.random() * 0.2 + 0.05;
+
+                    element.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${left}%;
+                    top: ${100 + Math.random() * 20}%;
+                    animation-delay: ${delay}s;
+                    animation-duration: ${duration}s;
+                    opacity: ${opacity};
+                    font-size: ${size}px;
+                    color: rgba(255, 255, 255, ${opacity});
+                `;
+
+                    fragment.appendChild(element);
+                }
+                container.appendChild(fragment);
+            }
+
+            // Переключение видимости пароля
+            document
+                .getElementById("togglePassword")
+                .addEventListener("click", function () {
+                    const passwordInput = document.getElementById("password");
+                    const icon = this.querySelector("i");
+
+                    if (passwordInput.type === "password") {
+                        passwordInput.type = "text";
+                        icon.classList.remove("fa-eye");
+                        icon.classList.add("fa-eye-slash");
+                    } else {
+                        passwordInput.type = "password";
+                        icon.classList.remove("fa-eye-slash");
+                        icon.classList.add("fa-eye");
+                    }
+                });
+
+            // Инициализация при загрузке
+            document.addEventListener("DOMContentLoaded", function () {
+                createStars();
+                createFloatingElements();
+
+                // Автофокус на поле логина
+                document.getElementById("username").focus();
+            });
+        </script>
+    </body>
+</html>

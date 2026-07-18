@@ -1,0 +1,922 @@
+{% extends "base.html" %} {% block title %}СПА-салон Luna | Новости{% endblock
+%} {% block content %}
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Админ-панель дял новостей</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"
+        />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            body {
+                min-height: 100vh;
+                color: white;
+            }
+
+            .admin-news-container {
+                min-height: 100vh;
+                padding: 120px 20px 40px;
+            }
+
+            .admin-header {
+                text-align: center;
+                margin-bottom: 40px;
+                padding: 30px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 20px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .admin-title {
+                font-size: 36px;
+                color: white;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .admin-title i {
+                color: #ffcc00;
+            }
+
+            .admin-subtitle {
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 18px;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .admin-content {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .admin-controls {
+                display: flex;
+                gap: 15px;
+                margin-bottom: 30px;
+            }
+
+            .btn-add-news,
+            .btn-refresh {
+                padding: 12px 25px;
+                border: none;
+                border-radius: 12px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .btn-add-news {
+                background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
+                color: black;
+            }
+
+            .btn-add-news:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 20px rgba(255, 204, 0, 0.3);
+            }
+
+            .btn-refresh {
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .btn-refresh:hover {
+                background: rgba(255, 255, 255, 0.2);
+            }
+
+            .stats-cards {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                margin-bottom: 40px;
+            }
+
+            .stat-card {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 15px;
+                padding: 25px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                transition: transform 0.3s ease;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+                background: rgba(255, 255, 255, 0.08);
+            }
+
+            .stat-icon {
+                width: 60px;
+                height: 60px;
+                background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                color: black;
+            }
+
+            .stat-info h3 {
+                font-size: 32px;
+                color: white;
+                margin: 0 0 5px 0;
+            }
+
+            .stat-info p {
+                color: rgba(255, 255, 255, 0.7);
+                margin: 0;
+            }
+
+            .news-table-container {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 15px;
+                overflow: hidden;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .news-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .news-table th {
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                padding: 18px 15px;
+                text-align: left;
+                font-weight: 600;
+                border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .news-table td {
+                padding: 15px;
+                color: rgba(255, 255, 255, 0.9);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .news-table tr:hover {
+                background: rgba(255, 255, 255, 0.03);
+            }
+
+            .action-buttons {
+                display: flex;
+                gap: 10px;
+            }
+
+            .btn-edit,
+            .btn-delete-item {
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+                border: none;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+                font-size: 14px;
+            }
+
+            .btn-edit {
+                background: rgba(33, 150, 243, 0.2);
+                color: #2196f3;
+            }
+
+            .btn-edit:hover {
+                background: rgba(33, 150, 243, 0.3);
+                transform: scale(1.1);
+            }
+
+            .btn-delete-item {
+                background: rgba(244, 67, 54, 0.2);
+                color: #f44336;
+            }
+
+            .btn-delete-item:hover {
+                background: rgba(244, 67, 54, 0.3);
+                transform: scale(1.1);
+            }
+
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 1000;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .modal-content {
+                background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+                border-radius: 20px;
+                width: 90%;
+                max-width: 600px;
+                max-height: 90vh;
+                overflow-y: auto;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            }
+
+            .modal-header {
+                padding: 25px 30px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .modal-header h2 {
+                color: white;
+                margin: 0;
+                font-size: 24px;
+            }
+
+            .close-modal {
+                background: none;
+                border: none;
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 28px;
+                cursor: pointer;
+                transition: color 0.2s ease;
+            }
+
+            .close-modal:hover {
+                color: white;
+            }
+
+            .modal-body {
+                padding: 30px;
+            }
+
+            .form-group {
+                margin-bottom: 25px;
+            }
+
+            .form-group label {
+                display: block;
+                color: rgba(255, 255, 255, 0.9);
+                margin-bottom: 8px;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                width: 100%;
+                padding: 12px 15px;
+                background: rgba(255, 255, 255, 0.07);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 10px;
+                color: white;
+                font-size: 15px;
+                transition: all 0.3s ease;
+            }
+
+            .form-group input:focus,
+            .form-group textarea:focus,
+            .form-group select:focus {
+                outline: none;
+                border-color: #ffcc00;
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            .form-group textarea {
+                resize: vertical;
+                min-height: 120px;
+            }
+
+            .radio-group {
+                display: flex;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .radio-label {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 15px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .radio-label:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            .radio-label input[type="radio"] {
+                width: auto;
+            }
+
+            .form-hint {
+                display: block;
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 13px;
+                margin-top: 5px;
+                font-style: italic;
+            }
+
+            .modal-footer {
+                padding: 20px 30px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                display: flex;
+                justify-content: flex-end;
+                gap: 15px;
+            }
+
+            .btn-cancel,
+            .btn-save,
+            .btn-delete {
+                padding: 12px 25px;
+                border: none;
+                border-radius: 10px;
+                font-size: 15px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .btn-cancel {
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+            }
+
+            .btn-cancel:hover {
+                background: rgba(255, 255, 255, 0.2);
+            }
+
+            .btn-save {
+                background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
+                color: black;
+            }
+
+            .btn-save:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
+            }
+
+            .btn-delete {
+                background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+                color: white;
+            }
+
+            .btn-delete:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+            }
+
+            .confirm-modal .modal-content {
+                max-width: 500px;
+            }
+
+            .confirm-modal .modal-body {
+                text-align: center;
+                padding: 40px 30px;
+            }
+
+            .warning-icon {
+                font-size: 60px;
+                color: #ffcc00;
+                margin-bottom: 20px;
+            }
+
+            .confirm-modal h3 {
+                color: white;
+                margin-bottom: 10px;
+            }
+
+            .confirm-modal p {
+                color: rgba(255, 255, 255, 0.7);
+                margin: 0;
+            }
+
+            @media (max-width: 768px) {
+                .admin-title {
+                    font-size: 28px;
+                }
+                .stats-cards {
+                    grid-template-columns: 1fr;
+                }
+                .news-table {
+                    display: block;
+                    overflow-x: auto;
+                }
+                .radio-group {
+                    flex-direction: column;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="admin-news-container">
+            <section class="admin-header">
+                <h1 class="admin-title">
+                    <i class="fas fa-newspaper"></i>
+                    Управление новостями
+                </h1>
+                <p class="admin-subtitle">
+                    Добавляйте, редактируйте и удаляйте новости и акции для
+                    вашего СПА-салона
+                </p>
+            </section>
+
+            <main class="admin-content">
+                <div class="admin-controls">
+                    <button class="btn-add-news" onclick="showAddNewsModal()">
+                        <i class="fas fa-plus-circle"></i>
+                        Добавить новость
+                    </button>
+                    <button class="btn-refresh" onclick="loadNews()">
+                        <i class="fas fa-sync-alt"></i>
+                        Обновить
+                    </button>
+                </div>
+
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-newspaper"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalNews">0</h3>
+                            <p>Всего новостей</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalImages">0</h3>
+                            <p>Изображений</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalVideos">0</h3>
+                            <p>Видео</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="news-table-container">
+                    <table class="news-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Заголовок</th>
+                                <th>Тип медиа</th>
+                                <th>Дата публикации</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="newsTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div id="newsModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 id="modalTitle">Добавить новую новость</h2>
+                            <button class="close-modal" onclick="closeModal()">
+                                &times;
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="newsForm">
+                                <input type="hidden" id="newsId" value="" />
+
+                                <div class="form-group">
+                                    <label for="newsTitle"
+                                        ><i class="fas fa-heading"></i>
+                                        Заголовок</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="newsTitle"
+                                        required
+                                        placeholder="Введите заголовок новости"
+                                    />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="newsContent"
+                                        ><i class="fas fa-align-left"></i>
+                                        Содержание</label
+                                    >
+                                    <textarea
+                                        id="newsContent"
+                                        rows="6"
+                                        required
+                                        placeholder="Введите содержание новости"
+                                    ></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label
+                                        ><i class="fas fa-photo-video"></i> Тип
+                                        медиа</label
+                                    >
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input
+                                                type="radio"
+                                                name="mediaType"
+                                                value="image"
+                                                checked
+                                            />
+                                            <i class="fas fa-image"></i>
+                                            Изображение
+                                        </label>
+                                        <label class="radio-label">
+                                            <input
+                                                type="radio"
+                                                name="mediaType"
+                                                value="video"
+                                            />
+                                            <i class="fas fa-video"></i> Видео
+                                        </label>
+                                        <label class="radio-label">
+                                            <input
+                                                type="radio"
+                                                name="mediaType"
+                                                value="none"
+                                            />
+                                            <i class="fas fa-ban"></i> Без медиа
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="mediaUrlGroup">
+                                    <label for="mediaUrl"
+                                        ><i class="fas fa-link"></i> Ссылка на
+                                        медиа</label
+                                    >
+                                    <input
+                                        type="url"
+                                        id="mediaUrl"
+                                        placeholder="https://example.com/image.jpg"
+                                    />
+                                    <small class="form-hint"
+                                        >Для изображений: ссылка на Unsplash или
+                                        ваш хостинг. Для видео: прямая ссылка на
+                                        .mp4 файл</small
+                                    >
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="newsDate"
+                                        ><i class="fas fa-calendar-alt"></i>
+                                        Дата публикации</label
+                                    >
+                                    <input type="date" id="newsDate" required />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-cancel" onclick="closeModal()">
+                                Отмена
+                            </button>
+                            <button class="btn-save" onclick="saveNews()">
+                                Сохранить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="confirmModal" class="modal confirm-modal">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <i
+                                class="fas fa-exclamation-triangle warning-icon"
+                            ></i>
+                            <h3>Подтверждение удаления</h3>
+                            <p id="confirmMessage">
+                                Вы уверены, что хотите удалить эту новость?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                class="btn-cancel"
+                                onclick="closeConfirmModal()"
+                            >
+                                Отмена
+                            </button>
+                            <button
+                                class="btn-delete"
+                                onclick="confirmDelete()"
+                            >
+                                Удалить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <script>
+            let newsToDelete = null;
+            let allNews = [];
+
+            document.addEventListener("DOMContentLoaded", function () {
+                loadNews();
+                setupMediaTypeToggle();
+                setupFormValidation();
+            });
+
+            async function loadNews() {
+                try {
+                    const response = await fetch("/api/admin/news");
+                    if (!response.ok)
+                        throw new Error("Network response was not ok");
+
+                    const data = await response.json();
+                    if (data.success) {
+                        allNews = data.news;
+                        updateStats(data.news);
+                        renderNewsTable(data.news);
+                    } else {
+                        showError("Ошибка загрузки новостей");
+                    }
+                } catch (error) {
+                    console.error("Error loading news:", error);
+                    showError("Не удалось загрузить новости");
+                }
+            }
+
+            function updateStats(news) {
+                document.getElementById("totalNews").textContent = news.length;
+
+                const images = news.filter(
+                    (item) => item.media_type === "image",
+                ).length;
+                const videos = news.filter(
+                    (item) => item.media_type === "video",
+                ).length;
+
+                document.getElementById("totalImages").textContent = images;
+                document.getElementById("totalVideos").textContent = videos;
+            }
+
+            function renderNewsTable(news) {
+                const tbody = document.getElementById("newsTableBody");
+                tbody.innerHTML = "";
+
+                news.forEach((item) => {
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td><strong>${item.title}</strong></td>
+                    <td>
+                        ${
+                            item.media_type === "image"
+                                ? '<i class="fas fa-image"></i> Изображение'
+                                : item.media_type === "video"
+                                  ? '<i class="fas fa-video"></i> Видео'
+                                  : '<i class="fas fa-ban"></i> Нет'
+                        }
+                    </td>
+                    <td>${formatDate(item.date)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-edit" onclick="editNews(${item.id})" title="Редактировать">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-delete-item" onclick="showDeleteConfirm(${item.id})" title="Удалить">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+
+                    tbody.appendChild(row);
+                });
+            }
+
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString("ru-RU", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                });
+            }
+
+            function showAddNewsModal() {
+                document.getElementById("modalTitle").textContent =
+                    "Добавить новую новость";
+                document.getElementById("newsForm").reset();
+                document.getElementById("newsId").value = "";
+                document.getElementById("newsDate").value = new Date()
+                    .toISOString()
+                    .split("T")[0];
+                document.getElementById("newsModal").style.display = "flex";
+            }
+
+            function editNews(id) {
+                const newsItem = allNews.find((item) => item.id === id);
+                if (!newsItem) return;
+
+                document.getElementById("modalTitle").textContent =
+                    "Редактировать новость";
+                document.getElementById("newsId").value = newsItem.id;
+                document.getElementById("newsTitle").value = newsItem.title;
+                document.getElementById("newsContent").value = newsItem.content;
+                document.getElementById("mediaUrl").value =
+                    newsItem.media_url || "";
+                document.getElementById("newsDate").value = newsItem.date;
+
+                const mediaType = newsItem.media_type || "none";
+                document.querySelector(
+                    `input[name="mediaType"][value="${mediaType}"]`,
+                ).checked = true;
+                toggleMediaUrl(mediaType);
+
+                document.getElementById("newsModal").style.display = "flex";
+            }
+
+            function setupMediaTypeToggle() {
+                const radios = document.querySelectorAll(
+                    'input[name="mediaType"]',
+                );
+                radios.forEach((radio) => {
+                    radio.addEventListener("change", function () {
+                        toggleMediaUrl(this.value);
+                    });
+                });
+            }
+
+            function toggleMediaUrl(type) {
+                const urlGroup = document.getElementById("mediaUrlGroup");
+                const urlInput = document.getElementById("mediaUrl");
+
+                if (type === "none") {
+                    urlGroup.style.display = "none";
+                    urlInput.required = false;
+                } else {
+                    urlGroup.style.display = "block";
+                    urlInput.required = true;
+                }
+            }
+
+            function setupFormValidation() {
+                const form = document.getElementById("newsForm");
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    saveNews();
+                });
+            }
+
+            async function saveNews() {
+                const form = document.getElementById("newsForm");
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                const newsData = {
+                    id: document.getElementById("newsId").value || null,
+                    title: document.getElementById("newsTitle").value,
+                    content: document.getElementById("newsContent").value,
+                    media_type: document.querySelector(
+                        'input[name="mediaType"]:checked',
+                    ).value,
+                    media_url: document.getElementById("mediaUrl").value || "",
+                    date: document.getElementById("newsDate").value,
+                };
+
+                if (newsData.media_type === "none") {
+                    newsData.media_url = "";
+                }
+
+                try {
+                    const response = await fetch("/api/admin/news/save", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(newsData),
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        closeModal();
+                        loadNews();
+                        showSuccess("Новость успешно сохранена");
+                    } else {
+                        showError(data.error || "Ошибка сохранения");
+                    }
+                } catch (error) {
+                    console.error("Error saving news:", error);
+                    showError("Не удалось сохранить новость");
+                }
+            }
+
+            function showDeleteConfirm(id) {
+                const newsItem = allNews.find((item) => item.id === id);
+                if (!newsItem) return;
+
+                newsToDelete = id;
+                document.getElementById("confirmMessage").textContent =
+                    `Вы уверены, что хотите удалить новость "${newsItem.title}"?`;
+                document.getElementById("confirmModal").style.display = "flex";
+            }
+
+            async function confirmDelete() {
+                if (!newsToDelete) return;
+
+                try {
+                    const response = await fetch(
+                        `/api/admin/news/delete/${newsToDelete}`,
+                        {
+                            method: "DELETE",
+                        },
+                    );
+
+                    const data = await response.json();
+                    if (data.success) {
+                        closeConfirmModal();
+                        loadNews();
+                        showSuccess("Новость успешно удалена");
+                    } else {
+                        showError(data.error || "Ошибка удаления");
+                    }
+                } catch (error) {
+                    console.error("Error deleting news:", error);
+                    showError("Не удалось удалить новость");
+                } finally {
+                    newsToDelete = null;
+                }
+            }
+
+            function closeModal() {
+                document.getElementById("newsModal").style.display = "none";
+            }
+
+            function closeConfirmModal() {
+                document.getElementById("confirmModal").style.display = "none";
+                newsToDelete = null;
+            }
+
+            function showSuccess(message) {
+                alertify.success(message);
+            }
+
+            function showError(message) {
+                alertify.error(message);
+            }
+
+            window.onclick = function (event) {
+                const modal = document.getElementById("newsModal");
+                if (event.target === modal) {
+                    closeModal();
+                }
+
+                const confirmModal = document.getElementById("confirmModal");
+                if (event.target === confirmModal) {
+                    closeConfirmModal();
+                }
+            };
+        </script>
+    </body>
+</html>
+{% endblock %}
