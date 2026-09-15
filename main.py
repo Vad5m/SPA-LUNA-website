@@ -20,23 +20,23 @@ from flask import (
     send_from_directory,
     session,
 )
+from flask_minify import Minify
 from flask_socketio import SocketIO
 from PIL import Image
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+Minify(app=app, html=True, js=True, cssless=True)
 app.config["STATIC_FOLDER"] = os.path.join(app.root_path, "static")
-app.secret_key = None
+app.secret_key = "1q2w3e4r5t6y"
 UPLOAD_SIZE = 500 * 1024 * 1024
 app.config["MAX_CONTENT_LENGTH"] = UPLOAD_SIZE
-BOT_TOKEN = None
-BOT_USERNAME = None
 UPLOAD_FOLDER = "static/uploads/reviews"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 
-ADMIN_CREDENTIALS = {"username": None, "password": None}
+ADMIN_CREDENTIALS = {"username": "NONE", "password": "NONE"}
 
 socketio = SocketIO(
     app,
@@ -295,125 +295,6 @@ class Sites:
         if session.get("admin_logged_in"):
             return jsonify({"authenticated": True})
         return jsonify({"authenticated": False}), 401
-
-
-class Telega:
-    class login_with_tg:
-        @staticmethod
-        def verify_telegram_data(telegram_data):
-            try:
-                received_hash = telegram_data.get("hash")
-                if not received_hash:
-                    print("No hash in Telegram data")
-                    return False
-
-                data_check_string = "\n".join(
-                    [
-                        f"{key}={telegram_data[key]}"
-                        for key in sorted(telegram_data.keys())
-                        if key != "hash"
-                    ]
-                )
-
-                print(f"Data check string: {data_check_string}")
-
-                secret_key = hashlib.sha256(BOT_TOKEN.encode()).digest()
-                computed_hash = hmac.new(
-                    secret_key, data_check_string.encode(), hashlib.sha256
-                ).hexdigest()
-
-                print(f"Received hash: {received_hash}")
-                print(f"Computed hash: {computed_hash}")
-                print(
-                    f"Hash match: {hmac.compare_digest(computed_hash, received_hash)}"
-                )
-
-                return hmac.compare_digest(computed_hash, received_hash)
-
-            except Exception as e:
-                print(f"Error verifying Telegram data: {e}")
-                return False
-
-        @staticmethod
-        @app.route("/auth/telegram", methods=["POST"])
-        def telegram_auth():
-            try:
-                telegram_data = request.get_json()
-                print(f"=== AUTH START ===")
-                print(f"Received Telegram data: {telegram_data}")
-
-                if not Telega.login_with_tg.verify_telegram_data(telegram_data):
-                    print("Telegram data verification FAILED")
-                    return jsonify(
-                        {"success": False, "error": "Invalid authentication data"}
-                    ), 401
-
-                print("Telegram data verification SUCCESS")
-
-                user_data = {
-                    "id": telegram_data.get("id"),
-                    "first_name": telegram_data.get("first_name", ""),
-                    "last_name": telegram_data.get("last_name", ""),
-                    "username": telegram_data.get("username", ""),
-                    "photo_url": telegram_data.get("photo_url", ""),
-                    "auth_date": telegram_data.get("auth_date"),
-                }
-
-                session["user"] = user_data
-                session["logged_in"] = True
-
-                print(f"Session after auth: {dict(session)}")
-                print(f"User authenticated: {user_data}")
-
-                response_data = {"success": True, "user": user_data}
-
-                print(f"Sending response: {response_data}")
-                print("=== AUTH END ===")
-
-                return jsonify(response_data)
-
-            except Exception as e:
-                print(f"Auth error: {e}")
-                return jsonify(
-                    {"success": False, "error": "Authentication failed"}
-                ), 500
-
-        @staticmethod
-        @app.route("/profile")
-        def profile():
-            print(f"Profile route - logged_in: {session.get('logged_in')}")
-
-            if not session.get("logged_in"):
-                print("User not logged in, redirecting to index")
-                return redirect("/")
-
-            user = session.get("user")
-            print(f"Rendering profile for user: {user}")
-            return render_template("profile.html", user=user)
-
-        @staticmethod
-        @app.route("/logout")
-        def logout():
-            print("Logging out user")
-            session.clear()
-            return redirect("/")
-
-        @staticmethod
-        @app.route("/api/user")
-        def get_user():
-            if session.get("logged_in"):
-                return jsonify(session.get("user"))
-            return jsonify({"error": "Not authenticated"}), 401
-
-        @staticmethod
-        @app.route("/debug")
-        def debug():
-            debug_info = {
-                "session": dict(session),
-                "logged_in": session.get("logged_in"),
-                "user": session.get("user"),
-            }
-            return jsonify(debug_info)
 
 
 class Reviews:
