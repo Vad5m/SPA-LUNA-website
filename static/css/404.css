@@ -1,0 +1,1145 @@
+/* Основные стили страницы 404 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Comfortaa", Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.7)),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23000022"/></svg>');
+    background-size: cover;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    padding: 20px;
+    cursor: default;
+}
+
+/* Стили для музыкального плеера */
+#music-player-container {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.5s ease-in-out;
+}
+
+#music-player-container.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.music-player {
+    --primary-color: #6366f1;
+    --text-color: #27272a;
+    --text-secondary: #52525b;
+    --border-color: #a1a1aa;
+    --bg-color: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    font-family:
+        system-ui,
+        -apple-system,
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+    position: relative;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.3),
+        0 0 30px rgba(255, 204, 0, 0.1);
+}
+
+.player-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* Диск с анимацией */
+.disc-container {
+    position: relative;
+    z-index: 0;
+    height: 64px;
+    margin-bottom: -8px;
+    transition: all 0.2s ease;
+}
+
+.player-container:hover .disc-container {
+    height: 0;
+}
+
+.disc {
+    width: 128px;
+    height: 128px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    animation: spin 3s linear infinite;
+    animation-play-state: paused;
+    transition: all 0.5s ease;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.disc.playing {
+    animation-play-state: running;
+}
+
+.disc-inner {
+    position: absolute;
+    top: 48px;
+    left: 48px;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    box-shadow: 0 1px 2px var(--shadow-color);
+    z-index: 10;
+}
+
+/* Карточка плеера */
+.player-card {
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    width: 160px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px var(--shadow-color);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.player-container:hover .player-card {
+    height: 160px;
+    width: 288px;
+}
+
+/* Верхняя часть карточки */
+.card-top {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+}
+
+.player-container:hover .card-top {
+    height: 80px;
+}
+
+.small-disc-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 96px;
+    height: 96px;
+    opacity: 0;
+    transition: all 0.1s ease;
+}
+
+.player-container:hover .small-disc-wrapper {
+    opacity: 1;
+    top: -24px;
+    left: -16px;
+}
+
+.small-disc {
+    width: 96px;
+    height: 96px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    background: rgba(0, 0, 0, 0.3);
+    animation: spin 3s linear infinite;
+    animation-play-state: paused;
+}
+
+.small-disc.playing {
+    animation-play-state: running;
+}
+
+.small-disc-inner {
+    position: absolute;
+    top: 36px;
+    left: 36px;
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    box-shadow: 0 1px 2px var(--shadow-color);
+    z-index: 10;
+}
+
+/* Информация о треке */
+.track-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    padding-left: 12px;
+    margin-left: -96px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.player-container:hover .track-info {
+    margin-left: -12px;
+}
+
+.track-name {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: white;
+    margin: 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-artist {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Прогресс бар */
+.progress-container {
+    display: flex;
+    flex-direction: row;
+    margin: 12px 12px 0 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    min-height: 16px;
+}
+
+.player-container:hover .progress-container {
+    margin-top: 0;
+}
+
+.time-start,
+.time-end {
+    display: none;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+    min-width: 40px;
+    text-align: center;
+}
+
+.player-container:hover .time-start,
+.player-container:hover .time-end {
+    display: inline-block;
+}
+
+.time-start {
+    padding-left: 12px;
+}
+
+.time-end {
+    padding-right: 12px;
+}
+
+.progress-bar {
+    flex-grow: 1;
+    width: 96px;
+    height: 4px;
+    margin: auto 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.player-container:hover .progress-bar {
+    width: 100%;
+}
+
+.progress-bar::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.progress-bar::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: white;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Элементы управления */
+.controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    margin: 0 12px;
+    gap: 20px;
+}
+
+.control-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 100%;
+    cursor: pointer;
+    color: white;
+    transition: all 0.2s ease;
+}
+
+.control-btn:hover {
+    color: #ffed4e;
+    transform: scale(1.1);
+}
+
+.play-mode {
+    width: 0;
+    overflow: hidden;
+}
+
+.player-container:hover .play-mode {
+    width: 48px;
+}
+
+.play-mode input {
+    display: none;
+}
+
+.play-mode input:checked + .repeat-icon {
+    display: none;
+}
+
+.play-mode input:checked ~ .shuffle-icon {
+    display: inline-block;
+}
+
+.shuffle-icon {
+    display: none;
+}
+
+/* Кнопка воспроизведения/паузы */
+.play-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 100%;
+    cursor: pointer;
+}
+
+.play-status input {
+    display: none;
+}
+
+.play-status input:checked + .play-icon {
+    display: none;
+}
+
+.play-status input:checked ~ .pause-icon {
+    display: inline-block;
+}
+
+.pause-icon {
+    display: none;
+}
+
+/* Кнопка списка */
+.list-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 0;
+    height: 100%;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.player-container:hover .list-btn {
+    width: 48px;
+}
+
+/* Анимация вращения */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* SVG стили */
+.svg-icon {
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+}
+
+.icon-gray {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Адаптивность для плеера */
+@media (max-width: 768px) {
+    #music-player-container {
+        left: 10px;
+        bottom: 10px;
+    }
+
+    .player-container:hover .player-card {
+        width: 260px;
+    }
+
+    .music-player {
+        transform: scale(0.9);
+        transform-origin: left bottom;
+    }
+}
+
+@media (max-width: 480px) {
+    #music-player-container {
+        left: 5px;
+        bottom: 5px;
+    }
+
+    .music-player {
+        transform: scale(0.8);
+    }
+
+    .player-container:hover .player-card {
+        width: 240px;
+    }
+}
+
+/* Контейнер для погоды */
+#weather-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 320px;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#weather-container.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Стили погодного виджета */
+.weather-card {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(255, 255, 255, 0.15) 100%
+    );
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.3),
+        0 0 30px rgba(255, 204, 0, 0.1);
+    color: white;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.weather-card:hover {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.35) 0%,
+        rgba(255, 255, 255, 0.25) 100%
+    );
+    transform: translateY(-2px);
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(255, 204, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.weather-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.weather-card:hover::before {
+    left: 100%;
+}
+
+.location {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.weather-main {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.temperature {
+    font-size: 48px;
+    font-weight: bold;
+    background: linear-gradient(180deg, #fff, #ffed4e);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.unit {
+    font-size: 24px;
+    color: #ffed4e;
+    vertical-align: super;
+    margin-left: 2px;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+}
+
+.weather-icon {
+    margin-left: auto;
+    width: 60px;
+    height: 60px;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+}
+
+.description {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.details {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 400;
+}
+
+.detail-value {
+    color: #fff;
+    font-weight: 600;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.source {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    margin-top: 10px;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.loading,
+.error {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    padding: 30px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.loading {
+    color: #ffed4e;
+}
+
+.error {
+    color: #ff6b6b;
+}
+
+/* Адаптивность для погоды */
+@media (max-width: 768px) {
+    #weather-container {
+        width: calc(100% - 40px);
+        right: 20px;
+        bottom: 20px;
+        max-width: 320px;
+        margin: 0 auto;
+    }
+
+    .weather-card {
+        padding: 20px;
+        border-radius: 25px;
+    }
+
+    .temperature {
+        font-size: 42px;
+    }
+
+    .weather-icon {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* Оригинальные стили страницы 404 */
+.stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    background-color: #ffffff;
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+    box-shadow:
+        0 0 8px rgba(255, 255, 255, 1),
+        0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+@keyframes twinkle {
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    max-width: 800px;
+    z-index: 10;
+    width: 100%;
+}
+
+.moon-container {
+    position: relative;
+    margin-bottom: 40px;
+    animation: float 6s ease-in-out infinite;
+    z-index: 15;
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.moon {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    border-radius: 50%;
+    position: relative;
+    box-shadow:
+        0 0 80px rgba(255, 204, 0, 0.9),
+        inset -20px -20px 40px rgba(0, 0, 0, 0.3),
+        inset 10px 10px 20px rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    animation: glow 4s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    0% {
+        box-shadow:
+            0 0 60px rgba(255, 204, 0, 0.8),
+            inset -20px -20px 40px rgba(0, 0, 0, 0.3);
+    }
+    100% {
+        box-shadow:
+            0 0 100px rgba(255, 204, 0, 1),
+            inset -20px -20px 40px rgba(0, 0, 0, 0.4);
+    }
+}
+
+.moon-craters {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.crater {
+    position: absolute;
+    background: rgba(180, 160, 80, 0.7);
+    border-radius: 50%;
+    animation: craterGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes craterGlow {
+    0% {
+        background: rgba(160, 140, 60, 0.6);
+    }
+    100% {
+        background: rgba(200, 180, 100, 0.8);
+    }
+}
+
+.crater-1 {
+    width: 40px;
+    height: 40px;
+    top: 30px;
+    left: 40px;
+    animation-delay: 0.2s;
+}
+.crater-2 {
+    width: 30px;
+    height: 30px;
+    top: 60px;
+    right: 50px;
+    animation-delay: 0.5s;
+}
+.crater-3 {
+    width: 35px;
+    height: 35px;
+    bottom: 40px;
+    left: 60px;
+    animation-delay: 0.8s;
+}
+.crater-4 {
+    width: 25px;
+    height: 25px;
+    bottom: 70px;
+    right: 30px;
+    animation-delay: 1.1s;
+}
+.crater-5 {
+    width: 32px;
+    height: 32px;
+    top: 100px;
+    left: 20px;
+    animation-delay: 1.4s;
+}
+
+.error-number {
+    font-size: 140px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow:
+        0 0 20px rgba(255, 255, 255, 0.5),
+        0 0 40px rgba(255, 204, 0, 0.3);
+    margin-bottom: 10px;
+    line-height: 1;
+    animation: pulse 3s infinite alternate;
+}
+
+@keyframes pulse {
+    0% {
+        text-shadow:
+            0 0 20px rgba(255, 255, 255, 0.5),
+            0 0 40px rgba(255, 204, 0, 0.3);
+    }
+    100% {
+        text-shadow:
+            0 0 30px rgba(255, 255, 255, 0.7),
+            0 0 60px rgba(255, 204, 0, 0.5);
+    }
+}
+
+.error-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.error-title::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.8),
+        transparent
+    );
+    border-radius: 2px;
+}
+
+.error-description {
+    font-size: 20px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 600px;
+    margin-bottom: 40px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.home-button {
+    font-size: 18px;
+    color: white;
+    text-decoration: none;
+    padding: 15px 40px;
+    border-radius: 30px;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(255, 255, 255, 0.15) 100%
+    );
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.home-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.home-button:hover::before {
+    left: 100%;
+}
+
+.home-button:hover {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.35) 0%,
+        rgba(255, 255, 255, 0.25) 100%
+    );
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.floating-elements {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.floating-element {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    animation: floatElement 15s infinite linear;
+}
+
+@keyframes floatElement {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+    100% {
+        transform: translateY(-1000px) rotate(720deg);
+    }
+}
+
+.ufo-system {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 25;
+}
+
+.ufo {
+    position: absolute;
+    font-size: 24px;
+    color: #ffffff;
+    text-shadow:
+        0 0 10px #ffffff,
+        0 0 20px #ffffff,
+        0 0 30px #ffffff;
+    opacity: 0;
+}
+
+.trail-container {
+    position: absolute;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    animation: particleFloat 2s ease-out forwards;
+}
+
+.cube {
+    font-family: monospace;
+    color: #ffffff;
+    text-shadow: 0 0 5px #ffffff;
+}
+
+.beam {
+    width: 2px;
+    height: 2px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #ffffff;
+}
+
+@keyframes particleFloat {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--move-x), var(--move-y)) scale(0.1);
+    }
+}
+
+@media (max-width: 768px) {
+    .moon {
+        width: 150px;
+        height: 150px;
+    }
+
+    .error-number {
+        font-size: 100px;
+    }
+
+    .error-title {
+        font-size: 28px;
+    }
+
+    .error-description {
+        font-size: 18px;
+        padding: 0 10px;
+    }
+
+    .error-container {
+        padding: 20px;
+    }
+
+    .ufo {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .moon {
+        width: 120px;
+        height: 120px;
+    }
+
+    .error-number {
+        font-size: 80px;
+    }
+
+    .error-title {
+        font-size: 24px;
+    }
+
+    .error-description {
+        font-size: 16px;
+        padding: 0 5px;
+    }
+
+    .home-button {
+        padding: 12px 30px;
+        font-size: 16px;
+    }
+
+    body {
+        padding: 10px;
+    }
+
+    .ufo {
+        font-size: 18px;
+    }
+
+    .crater-1 {
+        width: 30px;
+        height: 30px;
+        top: 20px;
+        left: 30px;
+    }
+    .crater-2 {
+        width: 20px;
+        height: 20px;
+        top: 45px;
+        right: 35px;
+    }
+    .crater-3 {
+        width: 25px;
+        height: 25px;
+        bottom: 30px;
+        left: 45px;
+    }
+    .crater-4 {
+        width: 18px;
+        height: 18px;
+        bottom: 50px;
+        right: 20px;
+    }
+    .crater-5 {
+        width: 22px;
+        height: 22px;
+        top: 70px;
+        left: 15px;
+    }
+}
+
+@media (max-width: 360px) {
+    .moon {
+        width: 100px;
+        height: 100px;
+    }
+
+    .error-number {
+        font-size: 70px;
+    }
+
+    .error-title {
+        font-size: 22px;
+    }
+
+    .error-description {
+        font-size: 14px;
+    }
+
+    .home-button {
+        padding: 10px 25px;
+        font-size: 14px;
+    }
+
+    .crater-1 {
+        width: 25px;
+        height: 25px;
+        top: 15px;
+        left: 25px;
+    }
+    .crater-2 {
+        width: 15px;
+        height: 15px;
+        top: 35px;
+        right: 25px;
+    }
+    .crater-3 {
+        width: 20px;
+        height: 20px;
+        bottom: 20px;
+        left: 35px;
+    }
+    .crater-4 {
+        width: 12px;
+        height: 12px;
+        bottom: 35px;
+        right: 15px;
+    }
+    .crater-5 {
+        width: 18px;
+        height: 18px;
+        top: 55px;
+        left: 10px;
+    }
+}
